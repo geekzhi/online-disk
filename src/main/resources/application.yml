@@ -1,0 +1,8 @@
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://172.16.189.130:3306/test
+    password: root
+    username: root

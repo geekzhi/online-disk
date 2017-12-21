@@ -1,0 +1,39 @@
+buildscript {
+	ext {
+		springBootVersion = '1.5.9.RELEASE'
+	}
+	repositories {
+		maven{
+			url "http://172.16.60.188:8081/nexus/content/groups/public"
+		}
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+
+group = 'com.geekzhang'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	maven{
+		url "http://172.16.60.188:8081/nexus/content/groups/public"
+	}
+}
+
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-freemarker')
+	compile('org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.1')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	runtime('mysql:mysql-connector-java')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+
+	//lombok
+	compile 'org.projectlombok:lombok:1.16.4'
+}

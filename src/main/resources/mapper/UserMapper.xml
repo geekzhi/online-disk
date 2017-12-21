@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geekzhang.demo.dao.UserMapper">
+    <!--<sql id="columns">-->
+        <!--UUID,IP,DOWNLOAD_TIME,APP_TYPE,CHANNEL_ID,APP_VERSION,APP_ID-->
+    <!--</sql>-->
+
+    <!--<sql id="query_columns">-->
+        <!--UUID as uuid,APP_TYPE as appType,APP_OS as appOs,APP_VERSION as appVerion,APP_FILE_NAME as appFileName,STS as sts,-->
+        <!--CUR_NEW_VER as curNewVer,CREATE_TIME as createTime ,MODIFY_TIME as modifyTime ,MEMO,COUNT_VISIT as countVisit,COUNT_DOWN as countDown-->
+    <!--</sql>-->
+
+    <select id="findAll" resultType="com.geekzhang.demo.orm.User">
+        select * from user;
+    </select>
+
+    <select id = "getIdByName" parameterType = "java.lang.String" resultType="java.lang.Integer">
+        select id from user where name = #{name}
+    </select>
+
+</mapper>
