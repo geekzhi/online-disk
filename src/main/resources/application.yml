@@ -1,5 +1,8 @@
+# mybatis相关配置
 mybatis:
   mapper-locations: classpath:mapper/*Mapper.xml
+
+# 数据库相关配置
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
@@ -10,7 +13,8 @@ spring:
     host: 172.16.189.130
     port: 6379
     timeout: 3000
-    database: 0
+
+# 不走拦截器的url
 music:
   exclude:
     path: /login/**

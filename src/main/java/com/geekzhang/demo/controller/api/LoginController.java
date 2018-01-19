@@ -25,8 +25,4 @@ public class LoginController {
         return map;
     }
 
-    @RequestMapping("/token")
-    public String redis(){
-        return "success";
-    }
 }
