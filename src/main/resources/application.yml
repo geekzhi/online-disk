@@ -6,6 +6,11 @@ spring:
     url: jdbc:mysql://172.16.189.130:3306/test
     password: root
     username: root
+  redis:
+    host: 172.16.189.130
+    port: 6379
+    timeout: 3000
+    database: 0
 music:
   exclude:
     path: /login/**
