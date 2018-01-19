@@ -1,6 +1,7 @@
 package com.geekzhang.demo.interceptor;
 
 import com.geekzhang.demo.redis.RedisClient;
+import com.geekzhang.demo.util.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,10 +21,20 @@ public class CrsoInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.info("进入拦截器");
-        String token = request.getHeader("Authorization");
-        if(redisClient.exists(token)) {
-            return true;
-        } else {
+        try {
+            String token = request.getHeader("Authorization");
+            log.info("前端传来的token为：[{}]", token);
+            String usrId = TokenUtils.getUserId(token);
+            log.info("usrId为：[{}]", usrId);
+            if (redisClient.exists(usrId) && token.equals(redisClient.getCacheValue(usrId))) {
+                log.info("token正确");
+                return true;
+            } else {
+                log.info("token不存在");
+                return false;
+            }
+        } catch (Exception e) {
+            log.error("token验证异常", e);
             return false;
         }
     }

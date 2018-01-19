@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -16,11 +17,12 @@ import java.util.Map;
 public class TokenUtils {
     private static final String SECRET = "ThisIsASecret";
 
-    public static String getJWTString(String userId, Map<String, Object> claims) {
+    public static String getJWTString(String usrId, Map<String, Object> claims) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         String jwtString = Jwts.builder()
-                .setSubject(userId)
+                .setSubject(usrId)
                 .setClaims(claims)
+                .setIssuedAt(new Date())
                 .signWith(signatureAlgorithm, SECRET)
                 .compact();
         return jwtString;

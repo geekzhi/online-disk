@@ -38,9 +38,10 @@ public class UserServiceImpl implements UserService {
                 Map<String, Object> claim = new HashMap<>();
                 String usrId = String.valueOf(resultUser.getId());
                 claim.put("usrName", resultUser.getName());
+                claim.put("usrId", resultUser.getId());
                 String token = TokenUtils.getJWTString(usrId, claim);
                 log.info("用户登录|用户名密码正确，生成token:[{}]", token);
-                redisClient.setCacheValue(usrId, token);
+                redisClient.setCacheValueForTime(usrId, token,60);
                 log.info("用户登录|已向redis存入用户token");
                 map.put("code", ResponseCode.SUCCESS.getCode());
                 map.put("msg", ResponseCode.SUCCESS.getDesc());
