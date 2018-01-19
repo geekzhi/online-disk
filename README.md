@@ -1,3 +1,8 @@
-# demo-ssm
-springboot+ssm+gradle项目脚手架
-Mybatis采用xml方式
+# music
+ 音乐网站
+ <br>
+ 前后端分离
+ <br>
+ SpringBoot + Mybatis 
+ <br>
+ gradle管理依赖包
