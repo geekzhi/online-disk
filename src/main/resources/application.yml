@@ -6,3 +6,6 @@ spring:
     url: jdbc:mysql://172.16.189.130:3306/test
     password: root
     username: root
+music:
+  exclude:
+    path: /login/**

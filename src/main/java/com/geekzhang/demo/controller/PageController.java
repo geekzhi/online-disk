@@ -20,6 +20,7 @@ public class PageController {
         return "Hello Worlds";
     }
 
+
     @RequestMapping("list")
     public List<User> list(){
         return userService.findAll();
