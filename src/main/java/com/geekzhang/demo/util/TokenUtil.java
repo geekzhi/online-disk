@@ -14,7 +14,7 @@ import java.util.Map;
  * @date: 2018/1/19 下午4:17
  * @version: V1.0
  */
-public class TokenUtils {
+public class TokenUtil {
     private static final String SECRET = "ThisIsASecret";
 
     public static String getJWTString(String usrId, Map<String, Object> claims) {

@@ -5,7 +5,7 @@ import com.geekzhang.demo.mapper.UserMapper;
 import com.geekzhang.demo.orm.User;
 import com.geekzhang.demo.redis.RedisClient;
 import com.geekzhang.demo.service.UserService;
-import com.geekzhang.demo.util.TokenUtils;
+import com.geekzhang.demo.util.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
                 String usrId = String.valueOf(resultUser.getId());
                 claim.put("usrName", resultUser.getName());
                 claim.put("usrId", resultUser.getId());
-                String token = TokenUtils.getJWTString(usrId, claim);
+                String token = TokenUtil.getJWTString(usrId, claim);
                 log.info("用户登录|用户名密码正确，生成token:[{}]", token);
                 redisClient.setCacheValueForTime(usrId, token,60);
                 log.info("用户登录|已向redis存入用户token");

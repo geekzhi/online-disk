@@ -1,5 +1,7 @@
 package com.geekzhang.demo.controller.api;
 
+import com.geekzhang.demo.controller.AbstractController;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,14 +14,17 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
-public class UserController {
+@Slf4j
+public class UserController extends AbstractController{
 
     /**
      * 自动登录校验
      * @return
      */
-    @RequestMapping(value = "/user/info", method = {RequestMethod.POST})
+    @RequestMapping(value = "/user/username", method = {RequestMethod.POST})
     public String getUserInfo(){
-        return "1";
+        String username =  getUserName();
+        log.info("用户名为：[{}]", username);
+        return username;
     }
 }
