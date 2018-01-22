@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,10 +20,17 @@ public class LoginController {
     @Autowired
     RedisClient redisClient;
 
-    @RequestMapping(value = "/login", method = {RequestMethod.GET})
+    @RequestMapping(value = "/login", method = {RequestMethod.POST})
     public Map login(User user){
         Map<String, Object> map = userService.login(user);
         return map;
+    }
+
+    @RequestMapping(value = "/login/all", method = {RequestMethod.GET})
+    public List<User> login(){
+        List<User> userList = userService.getAll();
+        System.out.println("111");
+        return userList;
     }
 
 }

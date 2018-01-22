@@ -4,7 +4,8 @@ buildscript {
 	}
 	repositories {
 		maven{
-			url "http://172.16.60.188:8081/nexus/content/groups/public"
+//			url "http://172.16.60.188:8081/nexus/content/groups/public"
+			url 'http://maven.aliyun.com/nexus/content/groups/public/'
 		}
 	}
 	dependencies {
@@ -22,7 +23,8 @@ sourceCompatibility = 1.8
 
 repositories {
 	maven{
-		url "http://172.16.60.188:8081/nexus/content/groups/public"
+//		url "http://172.16.60.188:8081/nexus/content/groups/public"
+		url 'http://maven.aliyun.com/nexus/content/groups/public/'
 	}
 }
 
@@ -42,4 +44,7 @@ dependencies {
 
 	//jjwt
 	compile("io.jsonwebtoken:jjwt:0.6.0")
+
+	//fastjson
+	compile 'com.alibaba:fastjson:1.2.41'
 }

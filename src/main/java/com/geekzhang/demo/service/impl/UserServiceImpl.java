@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -30,6 +31,7 @@ public class UserServiceImpl implements UserService {
         String pass = user.getPass();
         User resultUser = userMapper.findByName(name);
         if (resultUser == null) {
+            log.info("用户登录|用户名[{}]不存在", name);
             map.put("code", ResponseCode.NO_USER.getCode());
             map.put("msg", ResponseCode.NO_USER.getDesc());
         } else {
@@ -52,5 +54,10 @@ public class UserServiceImpl implements UserService {
             }
         }
         return map;
+    }
+
+    @Override
+    public List<User> getAll() {
+        return userMapper.findAll();
     }
 }

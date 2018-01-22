@@ -13,5 +13,9 @@
     <select id = "findByName" parameterType = "java.lang.String" resultMap="user">
         select * from user where name = #{name}
     </select>
+    
+    <select id = "findAll" resultMap="user">
+        select * from user
+    </select>
 
 </mapper>
