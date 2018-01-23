@@ -9,6 +9,7 @@ import com.geekzhang.demo.util.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ public class UserServiceImpl implements UserService {
         Map<String, Object> map = new HashMap<>();
         String name = user.getName();
         String pass = user.getPass();
+        String remember = user.getRemember();
         User resultUser = userMapper.findByName(name);
         if (resultUser == null) {
             log.info("用户登录|用户名[{}]不存在", name);
@@ -43,7 +45,11 @@ public class UserServiceImpl implements UserService {
                 claim.put("usrId", resultUser.getId());
                 String token = TokenUtil.getJWTString(usrId, claim);
                 log.info("用户登录|用户名密码正确，生成token:[{}]", token);
-                redisClient.setCacheValueForTime(usrId, token,60);
+                if("on".equals(remember)) {
+                    redisClient.setCacheValueForTime(usrId, token, 5*60);
+                } else {
+                    redisClient.setCacheValueForTime(usrId, token, 24*60*60);
+                }
                 log.info("用户登录|已向redis存入用户token");
                 map.put("code", ResponseCode.SUCCESS.getCode());
                 map.put("msg", ResponseCode.SUCCESS.getDesc());

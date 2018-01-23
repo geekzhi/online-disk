@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class User {
     int id;
-    String name;
-    String pass;
+    String name; //用户名
+    String pass; //密码
+    String remember; //过期时间
 }
