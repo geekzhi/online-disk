@@ -30,11 +30,5 @@ public class LoginController {
         return map;
     }
 
-//    @RequestMapping(value = "/login/all", method = {RequestMethod.GET})
-//    public List<User> login(){
-//        List<User> userList = userService.getAll();
-//        System.out.println("111");
-//        return userList;
-//    }
 
 }
