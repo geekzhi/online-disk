@@ -8,7 +8,16 @@
         <result property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="pass" column="pass"/>
+        <result property="email" column="email"/>
     </resultMap>
+
+    <sql id="columns">
+        id, name, pass, email
+    </sql>
+
+    <sql id="columns1">
+        name, pass, email
+    </sql>
 
     <select id = "findByName" parameterType = "java.lang.String" resultMap="user">
         select * from user where name = #{name}
@@ -17,5 +26,14 @@
     <select id = "findAll" resultMap="user">
         select * from user
     </select>
+
+    <select id = "findByEmail" resultMap="user" parameterType="java.lang.String">
+        select <include refid="columns"/> from user
+          where email = #{email}
+    </select>
+
+    <insert id="insert" parameterType="com.geekzhang.demo.orm.User">
+        insert into user(<include refid="columns1"/>) VALUES ( #{name}, #{pass}, #{email})
+    </insert>
 
 </mapper>

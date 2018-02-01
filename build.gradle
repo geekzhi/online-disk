@@ -47,4 +47,6 @@ dependencies {
 
 	//fastjson
 	compile 'com.alibaba:fastjson:1.2.41'
+
+	compile 'org.apache.commons:commons-email:1.5'
 }

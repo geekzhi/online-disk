@@ -10,4 +10,8 @@ public interface UserMapper
     User findByName(String name);
 
     List<User> findAll();
+
+    User findByEmail(String email);
+
+    int insert(User user);
 }
