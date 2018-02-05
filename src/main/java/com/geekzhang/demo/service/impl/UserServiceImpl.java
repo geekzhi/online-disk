@@ -192,7 +192,9 @@ public class UserServiceImpl implements UserService {
                 map.put("msg", ResponseCode.MODIFY_PSS_FAIL.getDesc());
             }
         } else {
-            int i = 1/0;
+            log.info("修改密码|非法调用");
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
         }
         return map;
     }
