@@ -36,4 +36,8 @@
         insert into user(<include refid="columns1"/>) VALUES ( #{name}, #{pass}, #{email})
     </insert>
 
+    <update id="changePassByEmail" parameterType="java.util.Map">
+        update user set pass = #{pass} where email = #{email}
+    </update>
+
 </mapper>

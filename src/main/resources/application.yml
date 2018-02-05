@@ -17,4 +17,8 @@ spring:
 # 不走拦截器的url
 music:
   exclude:
-    path: /login/**,/test/**,/verifyCode,/register
+    path: /login/**,/test/**,/verifyCode,/register,/changePass,/forgot
+
+web:
+  var:
+    forgot: http://localhost:63343/login/change.html?id=

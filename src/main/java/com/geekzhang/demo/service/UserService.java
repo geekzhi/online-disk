@@ -13,4 +13,8 @@ public interface UserService {
     Map<String, Object> register(User user);
 
     Map<String, Object> sendVerifyCode(String email);
+
+    Map<String, Object> forgotPass(String email);
+
+    Map<String, Object> changePass(String id, String newPass);
 }

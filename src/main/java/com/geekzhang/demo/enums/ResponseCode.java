@@ -11,7 +11,9 @@ public enum ResponseCode {
     EMAIL_WRONG("R001", "邮箱格式不正确"),
     EMAIL_REPET("R002", "邮箱已被使用"),
     VERIFYCODE_WRONG("R003", "验证码错误"),
-    INFO_WRONG("R004", "请检查信息是否输入有误");
+    INFO_WRONG("R004", "请检查信息是否输入有误"),
+    EMAIL_NOTEXIST("R005", "邮箱不存在"),
+    MODIFY_PSS_FAIL("P001", "修改失败");
 
     private final String code;
     private final String desc;

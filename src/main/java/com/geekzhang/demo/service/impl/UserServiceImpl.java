@@ -8,15 +8,16 @@ import com.geekzhang.demo.service.UserService;
 import com.geekzhang.demo.util.DataUtil;
 import com.geekzhang.demo.util.EmailUtil;
 import com.geekzhang.demo.util.TokenUtil;
+import com.geekzhang.demo.util.UuidUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -27,6 +28,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     RedisClient redisClient;
+
+    @Value("${web.var.forgot}")
+    private String forgotUrl;
 
     @Override
     public Map<String, Object> login(User user) {
@@ -116,10 +120,10 @@ public class UserServiceImpl implements UserService {
     public Map<String, Object> sendVerifyCode(String email) {
         Map<String, Object> map = new HashMap<>();
         if(DataUtil.isEmail(email)){
-            log.info("发送验证码|[{}]邮箱格式正确",email);
+            log.info("发送验证码|邮箱[{}]格式正确",email);
             User user = userMapper.findByEmail(email);
             if(user == null) {
-                log.info("发送验证码|[{}]邮箱没有注册", email);
+                log.info("发送验证码|邮箱[{}]没有注册", email);
                 String subject = "注册验证码";
                 String msg = "";
                 String verifyCode = DataUtil.getRandomNumber();
@@ -131,14 +135,64 @@ public class UserServiceImpl implements UserService {
                 map.put("code", ResponseCode.SUCCESS.getCode());
                 map.put("msg", ResponseCode.SUCCESS.getDesc());
             } else {
-                log.info("发送验证码|[{}]邮箱重复", email);
+                log.info("发送验证码|邮箱[{}]重复", email);
                 map.put("code", ResponseCode.EMAIL_REPET.getCode());
                 map.put("msg", ResponseCode.EMAIL_REPET.getDesc());
             }
         } else {
-            log.info("发送验证码|[{}]邮箱格式不正确", email);
+            log.info("发送验证码|邮箱[{}]格式不正确", email);
             map.put("code", ResponseCode.EMAIL_WRONG.getCode());
             map.put("msg", ResponseCode.EMAIL_WRONG.getDesc());
+        }
+        return map;
+    }
+
+    public Map<String ,Object> forgotPass(String email) {
+        Map<String, Object> map = new HashMap<>();
+        if(!DataUtil.isEmail(email)) {
+            log.info("找回密码|邮箱[{}]格式不正确", email);
+            map.put("code", ResponseCode.EMAIL_WRONG.getCode());
+            map.put("msg", ResponseCode.EMAIL_WRONG.getDesc());
+            return map;
+        }
+        User user = userMapper.findByEmail(email);
+        if(user != null) {
+            String id = UuidUtil.getUuid();
+            String subject = "找回密码";
+            String msg = "您正在找回密码，请点击下面的链接找回：<a href=\""+ forgotUrl + id +"\">点击此处找回密码</a>,该链接30分钟内有效。";
+            redisClient.setCacheValueForTime(id, email, 30*60);
+            log.info("找回密码|开始发送邮件，邮箱：[{}]", email);
+            EmailUtil.sendEmail(email, msg, subject);
+            log.info("找回密码|已发送邮件，邮件内容：[{}]", msg);
+            map.put("code", ResponseCode.SUCCESS.getCode());
+            map.put("msg", ResponseCode.SUCCESS.getDesc());
+        } else {
+            map.put("code", ResponseCode.EMAIL_NOTEXIST.getCode());
+            map.put("msg", ResponseCode.EMAIL_NOTEXIST.getDesc());
+        }
+        return map;
+    }
+
+    public Map<String, Object> changePass(String id, String newPass) {
+        Map<String, Object> map = new HashMap<>();
+        if(redisClient.exists(id)){
+            String email = redisClient.getCacheValue(id);
+            Map userMap = new HashMap();
+            userMap.put("pass", newPass);
+            userMap.put("email", email);
+            int i = userMapper.changePassByEmail(userMap);
+            log.info("修改密码|用户邮箱：[{}],新密码：[{}]", email, newPass);
+            if(i > 0) {
+                log.info("修改密码|修改成功");
+                map.put("code", ResponseCode.SUCCESS.getCode());
+                map.put("msg", ResponseCode.SUCCESS.getDesc());
+            } else {
+                log.info("修改密码|修改失败");
+                map.put("code", ResponseCode.MODIFY_PSS_FAIL.getCode());
+                map.put("msg", ResponseCode.MODIFY_PSS_FAIL.getDesc());
+            }
+        } else {
+            int i = 1/0;
         }
         return map;
     }

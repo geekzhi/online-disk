@@ -42,6 +42,11 @@ public class LoginController {
         return map;
     }
 
+    /**
+     * 用户注册
+     * @param user
+     * @return
+     */
     @RequestMapping(value = "/register", method = {RequestMethod.POST})
     public Map register(User user) {
         Map<String , Object> map = new HashMap<>();
@@ -55,6 +60,11 @@ public class LoginController {
         return map;
     }
 
+    /**
+     * 注册发送邮箱验证码
+     * @param email
+     * @return
+     */
     @RequestMapping(value = "/verifyCode", method = {RequestMethod.POST})
     public Map sendVerifyCode(String email){
         Map<String, Object> map = new HashMap<>();
@@ -68,6 +78,31 @@ public class LoginController {
         return map;
     }
 
+    @RequestMapping(value = "/forgot", method = {RequestMethod.POST})
+    public Map forgotPass (String email) {
+        Map<String, Object> map = new HashMap<>();
+        try{
+            map = userService.forgotPass(email);
+        } catch (Exception e) {
+            log.info("找回密码异常", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
+
+    @RequestMapping(value = "/changePass", method = {RequestMethod.POST})
+    public Map changePass (String id, String newPass){
+        Map<String, Object> map = new HashMap<>();
+        try{
+            map = userService.changePass(id, newPass);
+        } catch (Exception e) {
+            log.info("修改密码异常", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
 //    @RequestMapping(value = "test/{email}")
 //    public Map sendEmail(@PathVariable String email){
 //
