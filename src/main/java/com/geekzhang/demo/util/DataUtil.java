@@ -16,7 +16,7 @@ public class DataUtil {
      * @return
      */
     public static Boolean isEmail(String mail){
-        String regex =  "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+        String regex =  "^([a-z0-9A-Z]+[-|_\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
 
         if(StringUtils.isEmpty(mail)) {
             return false;

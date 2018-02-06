@@ -11,12 +11,11 @@ import com.geekzhang.demo.util.TokenUtil;
 import com.geekzhang.demo.util.UuidUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -67,11 +66,6 @@ public class UserServiceImpl implements UserService {
             }
         }
         return map;
-    }
-
-    @Override
-    public List<User> getAll() {
-        return userMapper.findAll();
     }
 
     public Map<String, Object> register(User user){
@@ -193,6 +187,22 @@ public class UserServiceImpl implements UserService {
             }
         } else {
             log.info("修改密码|非法调用");
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> logout(String userId) {
+        Map<String, Object> map= new HashMap<>();
+        if(redisClient.exists(userId)) {
+            redisClient.delCacheByKey(userId);
+            log.info("用户已登出");
+            map.put("code", ResponseCode.SUCCESS.getCode());
+            map.put("msg", ResponseCode.SUCCESS.getDesc());
+        } else {
+            log.info("token不存在");
             map.put("code", ResponseCode.WRONG.getCode());
             map.put("msg", ResponseCode.WRONG.getDesc());
         }

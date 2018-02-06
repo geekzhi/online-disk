@@ -13,7 +13,8 @@ public enum ResponseCode {
     VERIFYCODE_WRONG("R003", "验证码错误"),
     INFO_WRONG("R004", "请检查信息是否输入有误"),
     EMAIL_NOTEXIST("R005", "邮箱不存在"),
-    MODIFY_PSS_FAIL("P001", "修改失败");
+    MODIFY_PSS_FAIL("P001", "修改失败"),
+    FILE_UPLOAD_FAIL("F001", "文件上传失败");
 
     private final String code;
     private final String desc;

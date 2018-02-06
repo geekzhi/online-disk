@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geekzhang.demo.mapper.UserFileMapper">
+
+    <resultMap id="userFile" type="com.geekzhang.demo.orm.UserFile">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="path" column="path"/>
+        <result property="userId" column="userId"/>
+    </resultMap>
+
+    <sql id="selectColumns">
+        id, name, path, userId
+    </sql>
+
+    <sql id="insertColumns">
+        name, path, userId
+    </sql>
+
+    <select id = "getFileList" parameterType="String" resultMap="userFile">
+        select <include refid="selectColumns"/> from user_file where userId = #{userId}
+    </select>
+    
+    <insert id="insert" parameterType="com.geekzhang.demo.orm.UserFile">
+        insert into user_file (<include refid="insertColumns"/>) values (#{name}, #{path}, #{userId});
+    </insert>
+</mapper>
