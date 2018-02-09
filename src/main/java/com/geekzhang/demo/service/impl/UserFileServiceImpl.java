@@ -30,14 +30,22 @@ public class UserFileServiceImpl implements UserFileService {
     @Override
     public Map<String, Object> uploadFile(String userId, MultipartFile file) {
         Map<String, Object> map = new HashMap<>();
+        String fileType = file.getContentType().split("/")[0];
+        if(!FileUtil.getAllowType(fileType)) {
+            log.info("文件上传|不支持的文件类型");
+            map.put("code", ResponseCode.FILE_TYPE_WRONG.getCode());
+            map.put("msg", ResponseCode.FILE_TYPE_WRONG.getDesc());
+            return map;
+        }
         Map<String, Object> fileMap = FileUtil.uploadFile(file);
         if((Boolean)fileMap.get("isSuccess")) {
             log.info("文件上传|成功");
             UserFile newFile = new UserFile();
             newFile.setName((String)fileMap.get("fileName"));
             String filePath = (String)fileMap.get("path");
-            filePath = filePath.split("Projects")[1];
+            filePath = filePath.split("web/")[1];
             newFile.setPath(filePath);
+            newFile.setType(fileType);
             newFile.setUserId(Integer.valueOf(userId));
             userFileMapper.insert(newFile);
             log.info("文件上传|已存入userId：【{}】的文件：【{}】",userId, newFile.getName());
@@ -52,9 +60,13 @@ public class UserFileServiceImpl implements UserFileService {
     }
 
     @Override
-    public Map<String, Object> getFileList(String userId) {
+    public Map<String, Object> getFileList(String userId, String fileType) {
         Map<String, Object> map = new HashMap<>();
-        List<UserFile> fileList = userFileMapper.getFileList(userId);
+        Map<String, String> findMap = new HashMap<>();
+        findMap.put("userId", userId);
+        findMap.put("type", fileType);
+        log.info("获取文件|usrId:[{}],文件类型:[{}]", userId, fileType);
+        List<UserFile> fileList = userFileMapper.getFileListByType(findMap);
         map.put("data", fileList);
         return map;
     }

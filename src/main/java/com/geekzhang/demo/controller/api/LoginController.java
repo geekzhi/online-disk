@@ -1,11 +1,13 @@
 package com.geekzhang.demo.controller.api;
 
 import com.geekzhang.demo.enums.ResponseCode;
+import com.geekzhang.demo.orm.DataVo;
 import com.geekzhang.demo.orm.User;
 import com.geekzhang.demo.redis.RedisClient;
 import com.geekzhang.demo.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -103,10 +105,21 @@ public class LoginController {
         }
         return map;
     }
-//    @RequestMapping(value = "test/{email}")
-//    public Map sendEmail(@PathVariable String email){
-//
-//    }
+    @RequestMapping(value = "/test", method = {RequestMethod.POST})
+    public Map sendEmail(@RequestBody DataVo data){
+        Map map = new HashMap();
+//        JSONObject json = JSONObject.parseObject(dataMap.get("data").toString());
+        log.info("test|"+ data.toString());
+        log.info(data.getHeader().getAppVer());
+        log.info(data.getData().getName());
+        log.info(data.getData().getPass());
+//        if("1".equals(json.get("name")) && "1".equals(json.get("pass"))) {
+//            map.put("msg","ok");
+//        } else {
+//           map.put("msg", "fail");
+//        }
+        return map;
+    }
 }
 
 

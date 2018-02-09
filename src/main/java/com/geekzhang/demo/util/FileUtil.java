@@ -4,8 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Description:
@@ -50,5 +49,32 @@ public class FileUtil {
             log.info("文件上传|异常:【{}】", e);
         }
         return map;
+    }
+
+    public static Boolean videoType(String type){
+        String[] videoType = {"mp4", "flv"};
+        if(Arrays.toString(videoType).contains(type)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static Boolean imgType(String type){
+        String[] imgTypes = {"png", "jpg", "gif", "bmp", "jepg"};
+        if(Arrays.toString(imgTypes).contains(type)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static Boolean getAllowType(String type) {
+        System.out.println(type);
+        if("video".equals(type) || "image".equals(type)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

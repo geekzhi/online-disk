@@ -5,10 +5,7 @@ import com.geekzhang.demo.enums.ResponseCode;
 import com.geekzhang.demo.service.UserFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
@@ -24,12 +21,13 @@ import java.util.Map;
 
 @RestController
 @Slf4j
-public class UploadController extends AbstractController {
+@RequestMapping("/file")
+public class FileController extends AbstractController {
 
     @Autowired
     private UserFileService userFileService;
 
-    @RequestMapping(value = "/file", method = {RequestMethod.POST})
+    @RequestMapping(value = "/upload", method = {RequestMethod.POST})
     public Map<String, Object> uploadFile(@RequestParam("file") MultipartFile file){
         Map<String, Object> map = new HashMap<>();
         try {
@@ -43,12 +41,12 @@ public class UploadController extends AbstractController {
         return map;
     }
 
-    @RequestMapping(value = "/fileList", method = {RequestMethod.GET})
-    public Map<String, Object> getFileList() {
+    @RequestMapping(value = "/fileList/{fileType}", method = {RequestMethod.GET})
+    public Map<String, Object> getFileList(@PathVariable String fileType) {
         Map<String, Object> map = new HashMap<>();
         try {
             String userId = getUserId();
-            map = userFileService.getFileList(userId);
+            map = userFileService.getFileList(userId, fileType);
         } catch (Exception e) {
             log.info("获取用户文件|异常：【{}】", e);
             map.put("code", ResponseCode.WRONG.getCode());

@@ -11,7 +11,8 @@ import java.util.Map;
  * @version: V1.0
  */
 public interface UserFileService {
+
     Map<String, Object> uploadFile(String userId, MultipartFile file);
 
-    Map<String, Object> getFileList(String userId);
+    Map<String, Object> getFileList(String userId, String fileType);
 }

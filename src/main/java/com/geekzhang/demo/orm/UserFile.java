@@ -13,5 +13,6 @@ public class UserFile {
     int id;
     String name;  //用户定义文件名
     String path; //文件路径
+    String type; //文件类型 img:图片 video:视频
     int userId;  //文件所属用户ID
 }

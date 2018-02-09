@@ -28,7 +28,7 @@ public class CrsoInterceptor implements HandlerInterceptor {
                 log.info("前端传来的token为：[{}]", token);
                 String usrId = TokenUtil.getUserId(token);
                 log.info("usrId为：[{}]", usrId);
-                if (redisClient.exists(usrId) && token.equals(redisClient.getCacheValue(usrId))) {
+                if ((!StringUtils.isEmpty(usrId)) && redisClient.exists(usrId) && token.equals(redisClient.getCacheValue(usrId))) {
                     log.info("token正确");
                     return true;
                 } else {

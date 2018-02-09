@@ -3,6 +3,7 @@ package com.geekzhang.demo.mapper;
 import com.geekzhang.demo.orm.UserFile;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description:
@@ -14,4 +15,6 @@ public interface UserFileMapper {
     int insert(UserFile userFile);
 
     List<UserFile> getFileList(String userId);
+
+    List<UserFile> getFileListByType(Map map);
 }
