@@ -1,9 +1,21 @@
+spring:
+  profiles:
+    active: ${profile:dev}
+
 # mybatis相关配置
 mybatis:
   mapper-locations: classpath:mapper/*Mapper.xml
 
+# 不走拦截器的url
+music:
+  exclude:
+    path: /login/**,/test,/verifyCode,/register,/changePass,/forgot,/file/**
+
+---
+#本地开发环境
 # 数据库相关配置
 spring:
+  profiles: dev
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://172.16.189.131:3306/test?useUnicode=true&characterEncoding=utf-8
@@ -18,11 +30,27 @@ spring:
       max-file-size: 5000Mb
       max-request-size: 5000Mb
 
+web:
+  var:
+    forgot: http://172.16.42.99:8081/change.html?id=
 
-# 不走拦截器的url
-music:
-  exclude:
-    path: /login/**,/test,/verifyCode,/register,/changePass,/forgot,/file/**
+---
+#服务器生产环境
+spring:
+  profiles: pro
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://geekzhang.tk:3306/test?useUnicode=true&characterEncoding=utf-8
+    password: root
+    username: root
+  redis:
+    host: geekzhang.tk
+    port: 6379
+    timeout: 3000
+  http:
+    multipart:
+      max-file-size: 5000Mb
+      max-request-size: 5000Mb
 
 web:
   var:
