@@ -40,11 +40,11 @@ spring:
   profiles: pro
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://geekzhang.tk:3306/test?useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://106.15.183.161:3306/test?useUnicode=true&characterEncoding=utf-8
     password: root
     username: root
   redis:
-    host: geekzhang.tk
+    host: 106.15.183.161
     port: 6379
     timeout: 3000
   http:
@@ -54,4 +54,4 @@ spring:
 
 web:
   var:
-    forgot: http://172.16.42.99:8081/change.html?id=
+    forgot: http://106.15.183.161/change.html?id=
