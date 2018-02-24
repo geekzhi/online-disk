@@ -47,6 +47,7 @@ spring:
     host: 106.15.183.161
     port: 6379
     timeout: 3000
+    password: root
   http:
     multipart:
       max-file-size: 5000Mb
