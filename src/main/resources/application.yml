@@ -55,3 +55,6 @@ spring:
 web:
   var:
     forgot: http://106.15.183.161/change.html?id=
+
+logging:
+  file: /online-disk/out.log
