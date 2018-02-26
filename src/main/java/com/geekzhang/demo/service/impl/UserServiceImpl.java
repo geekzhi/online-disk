@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
                 log.info("发送验证码|邮箱[{}]没有注册", email);
                 String subject = "注册验证码";
                 String msg = "";
-                String verifyCode = DataUtil.getRandomNumber();
+                String verifyCode = String.valueOf(DataUtil.getRandomNumber());
                 msg = "您的验证码为：" + verifyCode + ",五分钟内有效。";
                 log.info("发送验证码|开始向[{}]发送邮件", email);
                 EmailUtil.sendEmail(email, msg, subject);
