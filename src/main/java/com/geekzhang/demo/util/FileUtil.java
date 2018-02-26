@@ -22,10 +22,11 @@ public class FileUtil {
             return map;
         }
         // 获取文件名
-        String fileName = file.getOriginalFilename();
+        String fileOriginalName = file.getOriginalFilename();
+        String fileName = fileOriginalName.substring(0, fileOriginalName.lastIndexOf("."));
         log.info("文件上传|文件名：【{}】" , fileName);
         // 获取文件的后缀名
-        String suffixName = fileName.substring(fileName.lastIndexOf("."));
+        String suffixName = fileOriginalName.substring(fileOriginalName.lastIndexOf("."));
         log.info("文件上传|文件后缀：【{}】" , suffixName);
         //生成唯一标识作为文件名
         String fakeName = UuidUtil.getUuid();
@@ -40,6 +41,7 @@ public class FileUtil {
             file.transferTo(dest);
             map.put("isSuccess", true);
             map.put("fileName", fileName);
+            map.put("suffixName", suffixName);
             map.put("path", dest.toString());
             return map;
         } catch (Exception e) {
