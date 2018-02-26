@@ -32,7 +32,9 @@ spring:
 
 web:
   var:
-    forgot: http://172.16.42.99:8081/change.html?id=
+    forgot: http://172.16.189.131:8080/change.html?id=
+    filePath: /Users/zhangpengzhi/WebstormProjects/online-disk-front/static/
+
 
 ---
 #服务器生产环境
@@ -56,6 +58,7 @@ spring:
 web:
   var:
     forgot: http://106.15.183.161/change.html?id=
+    filePath: /online-disk/static/
 
 logging:
   file: /online-disk/out.log

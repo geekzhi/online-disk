@@ -7,6 +7,7 @@ import com.geekzhang.demo.service.UserFileService;
 import com.geekzhang.demo.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +28,9 @@ public class UserFileServiceImpl implements UserFileService {
     @Autowired
     private UserFileMapper userFileMapper;
 
+    @Value("${web.var.filePath}")
+    private String filePath;
+
     @Override
     public Map<String, Object> uploadFile(String userId, MultipartFile file) {
         Map<String, Object> map = new HashMap<>();
@@ -37,13 +41,13 @@ public class UserFileServiceImpl implements UserFileService {
             map.put("msg", ResponseCode.FILE_TYPE_WRONG.getDesc());
             return map;
         }
-        Map<String, Object> fileMap = FileUtil.uploadFile(file);
+        Map<String, Object> fileMap = FileUtil.uploadFile(file, filePath);
         if((Boolean)fileMap.get("isSuccess")) {
             log.info("文件上传|成功");
             UserFile newFile = new UserFile();
             newFile.setName((String)fileMap.get("fileName"));
             String filePath = (String)fileMap.get("path");
-            filePath = filePath.split("web/")[1];
+            filePath = filePath.split("online-disk-front/")[1];
             newFile.setPath(filePath);
             newFile.setType(fileType);
             newFile.setUserId(Integer.valueOf(userId));
