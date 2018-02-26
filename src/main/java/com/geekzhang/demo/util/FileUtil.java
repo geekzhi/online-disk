@@ -15,9 +15,7 @@ import java.util.*;
 @Slf4j
 public class FileUtil {
 
-    public static final String filePath = "/Users/zhangpengzhi/WebstormProjects/web/static/"; // 文件上传后的路径
-
-    public static Map<String, Object> uploadFile(MultipartFile file) {
+    public static Map<String, Object> uploadFile(MultipartFile file, String filePath) {
         Map<String, Object> map = new HashMap<>();
         if (file.isEmpty()) {
             map.put("isSuccess", false);
