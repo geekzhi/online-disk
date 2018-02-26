@@ -50,6 +50,7 @@ public class UserFileServiceImpl implements UserFileService {
             filePath = filePath.split("online-disk-front/")[1];
             newFile.setPath(filePath);
             newFile.setType(fileType);
+            newFile.setSuffixName((String)fileMap.get("suffixName"));
             newFile.setUserId(Integer.valueOf(userId));
             userFileMapper.insert(newFile);
             log.info("文件上传|已存入userId：【{}】的文件：【{}】",userId, newFile.getName());
