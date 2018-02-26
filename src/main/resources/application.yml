@@ -57,4 +57,4 @@ spring:
 web:
   var:
     forgot: http://106.15.183.161/change.html?id=
-    filePath:
+    filePath: /online-disk/static/
