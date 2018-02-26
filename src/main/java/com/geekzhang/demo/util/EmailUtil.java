@@ -18,6 +18,7 @@ public class EmailUtil {
         email.setHostName("smtp.163.com");
         //设置ssl发送
         email.setSslSmtpPort("465");
+        email.setSSLOnConnect(true);
         // 字符编码集的设置
         email.setCharset("utf-8");
         // 发送人的邮箱
