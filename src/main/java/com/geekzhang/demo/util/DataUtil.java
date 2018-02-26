@@ -29,9 +29,17 @@ public class DataUtil {
         return false;
     }
 
-    public static String getRandomNumber (){
-        int i = (int)(Math.random()*100)*100 + (int)(Math.random()*10);
-        return String.valueOf(i);
+    public static int getRandomNumber (){
+        //生成四位数随机数
+        int s = 0;
+        for (int t = 0; t < 4; t++) {
+            int i;
+            do {
+                i = (int) (Math.random() * 10) + 1;
+            } while (i == 10);
+            s = s * 10 + i;
+        }
+        return s;
     }
 
 
