@@ -47,7 +47,7 @@ public class UserFileServiceImpl implements UserFileService {
             UserFile newFile = new UserFile();
             newFile.setName((String)fileMap.get("fileName"));
             String filePath = (String)fileMap.get("path");
-            filePath = filePath.split("online-disk-front/")[1];
+            filePath = filePath.split("online-disk/")[1];
             newFile.setPath(filePath);
             newFile.setType(fileType);
             newFile.setUserId(Integer.valueOf(userId));
