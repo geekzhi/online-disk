@@ -2,6 +2,7 @@ package com.geekzhang.demo.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Map;
  */
 public interface UserFileService {
 
-    Map<String, Object> uploadFile(String userId, MultipartFile file);
+    Boolean uploadFile(String userId, List<MultipartFile> files);
 
     Map<String, Object> getFileList(String userId, String fileType);
 }

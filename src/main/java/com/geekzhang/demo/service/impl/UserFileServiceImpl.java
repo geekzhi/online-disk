@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,15 +33,14 @@ public class UserFileServiceImpl implements UserFileService {
     private String filePath;
 
     @Override
-    public Map<String, Object> uploadFile(String userId, MultipartFile file) {
+    public Boolean uploadFile(String userId, List<MultipartFile> files) {
         Map<String, Object> map = new HashMap<>();
-        String fileType = file.getContentType().split("/")[0];
-        if(!FileUtil.getAllowType(fileType)) {
-            log.info("文件上传|不支持的文件类型");
-            map.put("code", ResponseCode.FILE_TYPE_WRONG.getCode());
-            map.put("msg", ResponseCode.FILE_TYPE_WRONG.getDesc());
-            return map;
-        }
+        for(MultipartFile file : files) {
+            String fileType = file.getContentType().split("/")[0];
+            if (!FileUtil.getAllowType(fileType)) {
+                log.info("文件上传|不支持的文件类型");
+                return false;
+            }
         Map<String, Object> fileMap = FileUtil.uploadFile(file, filePath);
         if((Boolean)fileMap.get("isSuccess")) {
             log.info("文件上传|成功");
@@ -54,14 +54,11 @@ public class UserFileServiceImpl implements UserFileService {
             newFile.setUserId(Integer.valueOf(userId));
             userFileMapper.insert(newFile);
             log.info("文件上传|已存入userId：【{}】的文件：【{}】",userId, newFile.getName());
-            map.put("code", ResponseCode.SUCCESS.getCode());
-            map.put("msg", ResponseCode.SUCCESS.getDesc());
+            return true;
         } else {
             log.info("文件上传|失败");
-            map.put("code", ResponseCode.FILE_UPLOAD_FAIL.getCode());
-            map.put("msg", ResponseCode.FILE_UPLOAD_FAIL.getDesc());
+            return false;
         }
-        return map;
     }
 
     @Override
