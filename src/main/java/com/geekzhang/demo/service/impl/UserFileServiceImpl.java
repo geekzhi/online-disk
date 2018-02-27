@@ -34,31 +34,32 @@ public class UserFileServiceImpl implements UserFileService {
 
     @Override
     public Boolean uploadFile(String userId, List<MultipartFile> files) {
-        Map<String, Object> map = new HashMap<>();
         for(MultipartFile file : files) {
             String fileType = file.getContentType().split("/")[0];
             if (!FileUtil.getAllowType(fileType)) {
                 log.info("文件上传|不支持的文件类型");
                 return false;
             }
-        Map<String, Object> fileMap = FileUtil.uploadFile(file, filePath);
-        if((Boolean)fileMap.get("isSuccess")) {
-            log.info("文件上传|成功");
-            UserFile newFile = new UserFile();
-            newFile.setName((String)fileMap.get("fileName"));
-            String filePath = (String)fileMap.get("path");
-            filePath = filePath.split("static/")[1];
-            newFile.setPath(filePath);
-            newFile.setType(fileType);
-            newFile.setSuffixName((String)fileMap.get("suffixName"));
-            newFile.setUserId(Integer.valueOf(userId));
-            userFileMapper.insert(newFile);
-            log.info("文件上传|已存入userId：【{}】的文件：【{}】",userId, newFile.getName());
-            return true;
-        } else {
-            log.info("文件上传|失败");
-            return false;
+            Map<String, Object> fileMap = FileUtil.uploadFile(file, filePath);
+            if ((Boolean) fileMap.get("isSuccess")) {
+                log.info("文件上传|成功");
+                UserFile newFile = new UserFile();
+                newFile.setName((String) fileMap.get("fileName"));
+                String filePath = (String) fileMap.get("path");
+                filePath = filePath.split("online-disk-front/")[1];
+                newFile.setPath(filePath);
+                newFile.setType(fileType);
+                newFile.setSuffixName((String) fileMap.get("suffixName"));
+                newFile.setUserId(Integer.valueOf(userId));
+                userFileMapper.insert(newFile);
+                log.info("文件上传|已存入userId：【{}】的文件：【{}】", userId, newFile.getName());
+                return true;
+            } else {
+                log.info("文件上传|失败");
+                return false;
+            }
         }
+        return true;
     }
 
     @Override
