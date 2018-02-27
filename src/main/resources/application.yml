@@ -59,6 +59,7 @@ web:
   var:
     forgot: http://106.15.183.161/change.html?id=
     filePath: /online-disk/static/
-
+    
+#生产环境日志路径
 logging:
   file: /online-disk/out.log
