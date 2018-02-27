@@ -105,21 +105,6 @@ public class LoginController {
         }
         return map;
     }
-    @RequestMapping(value = "/test", method = {RequestMethod.POST})
-    public Map sendEmail(@RequestBody DataVo data){
-        Map map = new HashMap();
-//        JSONObject json = JSONObject.parseObject(dataMap.get("data").toString());
-        log.info("test|"+ data.toString());
-        log.info(data.getHeader().getAppVer());
-        log.info(data.getData().getName());
-        log.info(data.getData().getPass());
-//        if("1".equals(json.get("name")) && "1".equals(json.get("pass"))) {
-//            map.put("msg","ok");
-//        } else {
-//           map.put("msg", "fail");
-//        }
-        return map;
-    }
 }
 
 
