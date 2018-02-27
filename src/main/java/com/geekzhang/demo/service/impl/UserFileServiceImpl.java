@@ -34,7 +34,6 @@ public class UserFileServiceImpl implements UserFileService {
 
     @Override
     public Boolean uploadFile(String userId, List<MultipartFile> files) {
-        Map<String, Object> map = new HashMap<>();
         for(MultipartFile file : files) {
             String fileType = file.getContentType().split("/")[0];
             if (!FileUtil.getAllowType(fileType)) {
