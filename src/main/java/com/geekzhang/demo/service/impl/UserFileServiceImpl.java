@@ -32,6 +32,9 @@ public class UserFileServiceImpl implements UserFileService {
     @Value("${web.var.filePath}")
     private String filePath;
 
+    @Value("${web.var.splitPath}")
+    private String splitPath;
+
     @Override
     public Boolean uploadFile(String userId, List<MultipartFile> files) {
         for(MultipartFile file : files) {
@@ -46,7 +49,7 @@ public class UserFileServiceImpl implements UserFileService {
                 UserFile newFile = new UserFile();
                 newFile.setName((String) fileMap.get("fileName"));
                 String filePath = (String) fileMap.get("path");
-                filePath = filePath.split("online-disk-front/")[1];
+                filePath = filePath.split(splitPath)[1];
                 newFile.setPath(filePath);
                 newFile.setType(fileType);
                 newFile.setSuffixName((String) fileMap.get("suffixName"));
