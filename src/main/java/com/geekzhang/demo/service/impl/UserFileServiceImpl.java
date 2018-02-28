@@ -36,12 +36,14 @@ public class UserFileServiceImpl implements UserFileService {
     private String splitPath;
 
     @Override
-    public Boolean uploadFile(String userId, List<MultipartFile> files) {
+    public Map<String, String> uploadFile(String userId, List<MultipartFile> files) {
+        Map<String, String> map = new HashMap<>();
         for(MultipartFile file : files) {
             String fileType = file.getContentType().split("/")[0];
             if (!FileUtil.getAllowType(fileType)) {
                 log.info("文件上传|不支持的文件类型");
-                return false;
+                map.put("error", "不支持的文件类型");
+                return map;
             }
             Map<String, Object> fileMap = FileUtil.uploadFile(file, filePath);
             if ((Boolean) fileMap.get("isSuccess")) {
@@ -56,13 +58,14 @@ public class UserFileServiceImpl implements UserFileService {
                 newFile.setUserId(Integer.valueOf(userId));
                 userFileMapper.insert(newFile);
                 log.info("文件上传|已存入userId：【{}】的文件：【{}】", userId, newFile.getName());
-                return true;
+                return map;
             } else {
                 log.info("文件上传|失败");
-                return false;
+                map.put("error", "文件上传失败");
+                return map;
             }
         }
-        return true;
+        return map;
     }
 
     @Override

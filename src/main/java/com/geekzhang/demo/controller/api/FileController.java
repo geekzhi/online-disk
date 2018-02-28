@@ -3,6 +3,7 @@ package com.geekzhang.demo.controller.api;
 import com.geekzhang.demo.controller.AbstractController;
 import com.geekzhang.demo.enums.ResponseCode;
 import com.geekzhang.demo.service.UserFileService;
+import com.geekzhang.demo.util.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,15 +30,16 @@ public class FileController extends AbstractController {
     private UserFileService userFileService;
 
     @RequestMapping(value = "/upload", method = {RequestMethod.POST})
-    public Boolean uploadFile(MultipartHttpServletRequest request){
-        Boolean success = false;
+    public Map<String, String> uploadFile(MultipartHttpServletRequest request){
+        Map<String, String> map = new HashMap<>();
         try {
-            String userId = getUserId();
-            success = userFileService.uploadFile(userId, request.getFiles("files"));
+            String userId = TokenUtil.getUserId(request().getParameter("token"));
+            map = userFileService.uploadFile(userId, request.getFiles("files"));
         } catch (Exception e) {
             log.info("文件上传|异常：【{}】", e);
+            map.put("error", "系统内部异常");
         }
-        return success;
+        return map;
     }
 
     @RequestMapping(value = "/fileList/{fileType}", method = {RequestMethod.GET})

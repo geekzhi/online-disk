@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public interface UserFileService {
 
-    Boolean uploadFile(String userId, List<MultipartFile> files);
+    Map<String, String> uploadFile(String userId, List<MultipartFile> files);
 
     Map<String, Object> getFileList(String userId, String fileType);
 }

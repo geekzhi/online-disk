@@ -22,8 +22,13 @@ public class CrsoInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.info("进入拦截器");
+        String token = "";
         try {
-            String token = request.getHeader("Authorization");
+            if((!"".equals(request.getParameter("token"))) && (null != request.getParameter("token"))){
+                token = request.getParameter("token");
+            } else {
+                token = request.getHeader("Authorization");
+            }
             if (!StringUtils.isEmpty(token)) {
                 log.info("前端传来的token为：[{}]", token);
                 String usrId = TokenUtil.getUserId(token);
