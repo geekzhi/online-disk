@@ -34,6 +34,7 @@ web:
   var:
     forgot: http://172.16.189.131:8080/change.html?id=
     filePath: /Users/zhangpengzhi/WebstormProjects/online-disk-front/static/
+    splitPath: online-disk-front/
 
 
 ---
@@ -59,6 +60,7 @@ web:
   var:
     forgot: http://106.15.183.161/change.html?id=
     filePath: /online-disk/static/
+    splitPath: static/
 
 #生产环境日志路径
 logging:
