@@ -7,7 +7,7 @@ mybatis:
   mapper-locations: classpath:mapper/*Mapper.xml
 
 # 不走拦截器的url
-music:
+web:
   exclude:
     path: /login/**,/test/**,/verifyCode,/register,/changePass,/forgot
 
