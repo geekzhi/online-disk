@@ -19,18 +19,7 @@ public class DemoApplicationTests {
 
 	@Test
 	public void ss(){
-		File file = new File("/Users/zhangpengzhi/test/");
-		searchFile(file);
+
 	}
-	public void searchFile(File file){
-        File[] files = file.listFiles();
-        for (File f: files) {
-            if (!f.isDirectory()) {
-                System.out.println(file.getName());
-            } else {
-                System.out.println(file.getName());
-                searchFile(f);
-            }
-        }
-	}
+
 }
