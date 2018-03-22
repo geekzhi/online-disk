@@ -32,6 +32,8 @@ public class FileUtil {
         String fakeName = UuidUtil.getUuid();
         File dest = new File(filePath + fakeName + suffixName);
         log.info("文件上传|路径：【{}】", dest);
+        String size = String.valueOf(file.getSize() / 1024);
+        log.info("文件上传|文件大小：【{}】", size + "M");
         // 检测是否存在目录
         if (!dest.getParentFile().exists()) {
             dest.getParentFile().mkdirs();
@@ -43,6 +45,7 @@ public class FileUtil {
             map.put("fileName", fileName);
             map.put("suffixName", suffixName);
             map.put("path", dest.toString());
+            map.put("size", size);
             return map;
         } catch (Exception e) {
             map.put("isSuccess", false);

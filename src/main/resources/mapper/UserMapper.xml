@@ -9,10 +9,13 @@
         <result property="name" column="name"/>
         <result property="pass" column="pass"/>
         <result property="email" column="email"/>
+        <result property="vip" column="vip"/>
+        <result property="size" column="size"/>
+        <result property="use" column="use"/>
     </resultMap>
 
     <sql id="columns">
-        id, name, pass, email
+        id, name, pass, email, vip, size, use
     </sql>
 
     <sql id="columns1">

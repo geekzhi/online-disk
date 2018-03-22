@@ -49,6 +49,9 @@ public class UserServiceImpl implements UserService {
                 String usrId = String.valueOf(resultUser.getId());
                 claim.put("usrName", resultUser.getName());
                 claim.put("usrId", resultUser.getId());
+                claim.put("usrVip", resultUser.getVip());
+                claim.put("usrSize", resultUser.getSize());
+                claim.put("usrUse", resultUser.getUse());
                 String token = TokenUtil.getJWTString(usrId, claim);
                 log.info("用户登录|用户名密码正确，生成token:[{}]", token);
                 if("on".equals(remember)) {

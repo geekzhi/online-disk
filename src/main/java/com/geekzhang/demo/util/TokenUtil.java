@@ -51,8 +51,8 @@ public class TokenUtil {
     public static String getUserId(String jwsToken) {
         if (isValid(jwsToken)) {
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(jwsToken);
-            String userCode = String.valueOf(claimsJws.getBody().get("usrId"));
-            return userCode;
+            String userId = String.valueOf(claimsJws.getBody().get("usrId"));
+            return userId;
         }
         return null;
     }
@@ -65,8 +65,50 @@ public class TokenUtil {
     public static String getUserName(String jwsToken) {
         if (isValid(jwsToken)) {
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(jwsToken);
-            String userCode = String.valueOf(claimsJws.getBody().get("usrName"));
-            return userCode;
+            String userName = String.valueOf(claimsJws.getBody().get("usrName"));
+            return userName;
+        }
+        return null;
+    }
+
+    /**
+     * 获取用户会员状态 1会员 0非会员
+     * @param jwsToken
+     * @return
+     */
+    public static String getUserVip(String jwsToken) {
+        if (isValid(jwsToken)) {
+            Jws<Claims> claimsJws = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(jwsToken);
+            String userVip = String.valueOf(claimsJws.getBody().get("usrVip"));
+            return userVip;
+        }
+        return null;
+    }
+
+    /**
+     * 获取用户网盘大小
+     * @param jwsToken
+     * @return
+     */
+    public static String getUserSize(String jwsToken) {
+        if (isValid(jwsToken)) {
+            Jws<Claims> claimsJws = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(jwsToken);
+            String userSize = String.valueOf(claimsJws.getBody().get("usrSize"));
+            return userSize;
+        }
+        return null;
+    }
+
+    /**
+     * 获取用户已使用网盘大小
+     * @param jwsToken
+     * @return
+     */
+    public static String getUserUse(String jwsToken) {
+        if (isValid(jwsToken)) {
+            Jws<Claims> claimsJws = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(jwsToken);
+            String userUse = String.valueOf(claimsJws.getBody().get("usrUse"));
+            return userUse;
         }
         return null;
     }

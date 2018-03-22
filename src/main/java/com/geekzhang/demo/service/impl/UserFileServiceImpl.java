@@ -45,7 +45,7 @@ public class UserFileServiceImpl implements UserFileService {
                 map.put("error", "不支持的文件类型");
                 return map;
             }
-            Map<String, Object> fileMap = FileUtil.uploadFile(file, filePath);
+            Map<String, Object> fileMap = FileUtil.uploadFile(file, filePath + "/" + userId +"/");
             if ((Boolean) fileMap.get("isSuccess")) {
                 log.info("文件上传|成功");
                 UserFile newFile = new UserFile();
@@ -56,6 +56,7 @@ public class UserFileServiceImpl implements UserFileService {
                 newFile.setType(fileType);
                 newFile.setSuffixName((String) fileMap.get("suffixName"));
                 newFile.setUserId(Integer.valueOf(userId));
+                newFile.setSize((String) fileMap.get("size"));
                 userFileMapper.insert(newFile);
                 log.info("文件上传|已存入userId：【{}】的文件：【{}】", userId, newFile.getName());
                 return map;

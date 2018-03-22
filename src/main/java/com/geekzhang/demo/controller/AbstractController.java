@@ -78,7 +78,7 @@ public class AbstractController {
     }
 
     /**
-     * 获取用户信息
+     * 获取用户名
      *
      * @return
      */
@@ -86,4 +86,30 @@ public class AbstractController {
         return TokenUtil.getUserName(getUserToken());
     }
 
+    /**
+     * 获取用户会员状态
+     *
+     * @return
+     */
+    public String getUserVip() {
+        return TokenUtil.getUserVip(getUserToken());
+    }
+
+    /**
+     * 获取用户网盘大小
+     *
+     * @return
+     */
+    public String getUserSize(){
+        return TokenUtil.getUserSize(getUserToken());
+    }
+
+    /**
+     * 获取用户已使用大小
+     *
+     * @return
+     */
+    public String getUserUse(){
+        return TokenUtil.getUserUse(getUserToken());
+    }
 }

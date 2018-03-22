@@ -13,7 +13,7 @@ public class CrosInterceptorConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
     private CrsoInterceptor crsoInterceptor;
-    @Value("${music.exclude.path}")
+    @Value("${web.exclude.path}")
     private String excludePath;
 
     /**

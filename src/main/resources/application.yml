@@ -7,7 +7,7 @@ mybatis:
   mapper-locations: classpath:mapper/*Mapper.xml
 
 # 不走拦截器的url
-music:
+web:
   exclude:
     path: /login/**,/test/**,/verifyCode,/register,/changePass,/forgot
 
@@ -18,11 +18,11 @@ spring:
   profiles: dev
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://172.16.189.131:3306/test?useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://local.local:3306/test?useUnicode=true&characterEncoding=utf-8
     password: root
     username: root
   redis:
-    host: 172.16.189.131
+    host: local.local
     port: 6379
     timeout: 3000
   http:
@@ -32,7 +32,7 @@ spring:
 
 web:
   var:
-    forgot: http://172.16.189.131:8080/change.html?id=
+    forgot: http://local.local:8080/change.html?id=
     filePath: /Users/zhangpengzhi/WebstormProjects/online-disk-front/static/
     splitPath: online-disk-front/
 
