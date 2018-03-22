@@ -11,14 +11,15 @@
         <result property="path" column="path"/>
         <result property="type" column="type"/>
         <result property="userId" column="userId"/>
+        <result property="size" column="size"/>
     </resultMap>
 
     <sql id="selectColumns">
-        id, name, suffixName, path, type, userId
+        id, name, suffixName, path, type, userId, size
     </sql>
 
     <sql id="insertColumns">
-        name, path, suffixName, type, userId
+        name, path, suffixName, type, userId, size
     </sql>
 
     <select id = "getFileList" parameterType="String" resultMap="userFile">
@@ -30,6 +31,6 @@
     </select>
     
     <insert id="insert" parameterType="com.geekzhang.demo.orm.UserFile">
-        insert into user_file (<include refid="insertColumns"/>) values (#{name}, #{path}, #{suffixName}, #{type}, #{userId});
+        insert into user_file (<include refid="insertColumns"/>) values (#{name}, #{path}, #{suffixName}, #{type}, #{userId}, #{size});
     </insert>
 </mapper>

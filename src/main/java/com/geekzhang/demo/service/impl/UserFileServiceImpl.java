@@ -56,6 +56,7 @@ public class UserFileServiceImpl implements UserFileService {
                 newFile.setType(fileType);
                 newFile.setSuffixName((String) fileMap.get("suffixName"));
                 newFile.setUserId(Integer.valueOf(userId));
+                newFile.setSize((String) fileMap.get("size"));
                 userFileMapper.insert(newFile);
                 log.info("文件上传|已存入userId：【{}】的文件：【{}】", userId, newFile.getName());
                 return map;

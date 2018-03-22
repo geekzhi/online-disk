@@ -10,4 +10,7 @@ public class User {
     String email; //邮箱
     String verifyCode; //验证码
     String remember; //过期时间
+    String vip; //1:vip 0:非vip
+    String size; //网盘大小
+    String use; //已使用大小
 }
