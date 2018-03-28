@@ -13,7 +13,11 @@ import java.util.Map;
  */
 public interface UserFileService {
 
-    Map<String, String> uploadFile(String userId, List<MultipartFile> files);
+    Map<String, String> uploadFile(String userId, List<MultipartFile> files, String parentPath);
 
-    Map<String, Object> getFileList(String userId, String fileType);
+    Map<String, Object> getFileListByType(String userId, String fileType);
+
+    Map<String, Object> newFolder(String userId, String parentPath);
+
+    Map<String, Object> getFileListByPath(String userId, String parentPath);
 }
