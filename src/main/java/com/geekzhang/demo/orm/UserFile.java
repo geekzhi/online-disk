@@ -17,4 +17,5 @@ public class UserFile {
     String type; //文件类型 img:图片 video:视频
     int userId;  //文件所属用户ID
     String size; //文件大小，单位：Kb
+    String parentPath; //父文件路径
 }

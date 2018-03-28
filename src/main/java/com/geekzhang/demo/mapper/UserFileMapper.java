@@ -17,4 +17,8 @@ public interface UserFileMapper {
     List<UserFile> getFileList(String userId);
 
     List<UserFile> getFileListByType(Map map);
+
+    int insertFolder(Map map);
+
+    List<UserFile> getFileListByPath(Map map);
 }

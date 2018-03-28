@@ -12,25 +12,97 @@
         <result property="type" column="type"/>
         <result property="userId" column="userId"/>
         <result property="size" column="size"/>
+        <result property="parentPath" column="parentPath"/>
     </resultMap>
 
     <sql id="selectColumns">
-        id, name, suffixName, path, type, userId, size
+        id, name, suffixName, path, type, userId, size, parentPath
     </sql>
 
     <sql id="insertColumns">
-        name, path, suffixName, type, userId, size
+        <trim suffixOverrides=",">
+            <if test="name!=null">
+                name,
+            </if>
+
+            <if test="suffixName!=null">
+                suffixName,
+            </if>
+
+            <if test="path!=null">
+                path,
+            </if>
+
+            <if test="type!=null">
+                type,
+            </if>
+
+            <if test="userId!=null">
+                userId,
+            </if>
+
+            <if test="size!=null">
+                size,
+            </if>
+
+            <if test="parentPath!=null">
+                parentPath,
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="insertValues">
+        <trim suffixOverrides=",">
+            <if test="name!=null">
+                #{name},
+            </if>
+
+            <if test="suffixName!=null">
+                #{suffixName},
+            </if>
+
+            <if test="path!=null">
+                #{path},
+            </if>
+
+            <if test="type!=null">
+                #{type},
+            </if>
+
+            <if test="userId!=null">
+                #{userId},
+            </if>
+
+            <if test="size!=null">
+                #{size},
+            </if>
+
+            <if test="parentPath!=null">
+                #{parentPath},
+            </if>
+        </trim>
     </sql>
 
     <select id = "getFileList" parameterType="String" resultMap="userFile">
         select <include refid="selectColumns"/> from user_file where userId = #{userId}
     </select>
 
+    <select id = "getFileListByPath" parameterType="String" resultMap="userFile">
+        select <include refid="selectColumns"/>
+          from user_file
+          where userId = #{userId} and parentPath = #{parentPath}
+        group by type, name
+    </select>
+
     <select id = "getFileListByType" parameterType="String" resultMap="userFile">
         select <include refid="selectColumns"/> from user_file where userId = #{userId} and `type` = #{type}
     </select>
-    
+
     <insert id="insert" parameterType="com.geekzhang.demo.orm.UserFile">
-        insert into user_file (<include refid="insertColumns"/>) values (#{name}, #{path}, #{suffixName}, #{type}, #{userId}, #{size});
+        insert into user_file (<include refid="insertColumns"/>) values (<include refid="insertValues"/>);
+    </insert>
+
+    <insert id="insertFolder" parameterType="String">
+        insert into user_file (userId, name, parentPath) values (#{userId}, #{name}, #{parentPath})
     </insert>
 </mapper>
