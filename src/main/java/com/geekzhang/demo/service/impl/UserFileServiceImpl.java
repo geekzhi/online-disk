@@ -48,7 +48,7 @@ public class UserFileServiceImpl implements UserFileService {
                 return map;
             }
             if(StringUtils.isEmpty(parentPath)) parentPath = "/";
-            Map<String, Object> fileMap = FileUtil.uploadFile(file, filePath  + userId + parentPath);
+            Map<String, Object> fileMap = FileUtil.uploadFile(file, filePath  + userId + parentPath + "/");
             if ((Boolean) fileMap.get("isSuccess")) {
                 log.info("文件上传|成功");
                 UserFile newFile = new UserFile();
