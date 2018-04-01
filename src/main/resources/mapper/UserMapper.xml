@@ -30,6 +30,10 @@
         select * from user
     </select>
 
+    <select id = "findById" parameterType = "java.lang.String" resultMap="user">
+        select * from user where id = #{id}
+    </select>
+
     <select id = "findByEmail" resultMap="user" parameterType="java.lang.String">
         select <include refid="columns"/> from user
           where email = #{email}
@@ -41,6 +45,14 @@
 
     <update id="changePassByEmail" parameterType="java.util.Map">
         update user set pass = #{pass} where email = #{email}
+    </update>
+
+    <update id="sizePlus" parameterType="String">
+        update user set size = size + #{size} where id = #{userId}
+    </update>
+
+    <update id="usePlus" parameterType="String">
+        update user u set u.use = u.use + #{size} where id = #{userId}
     </update>
 
 </mapper>
