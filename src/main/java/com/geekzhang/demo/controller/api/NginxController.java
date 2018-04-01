@@ -33,9 +33,6 @@ public class NginxController extends AbstractController{
     @Value("${web.var.filePath}")
     private String filePath;
 
-    protected static final String DEFAULT_FILE_ENCODING = "ISO-8859-1";
-
-
     @RequestMapping("/file/{id}")
     public void passNginx(@PathVariable("id") String id, final HttpServletResponse response) throws IOException {
         log.info("用户请求文件|用户名:【{}】", getUserName());
@@ -47,7 +44,7 @@ public class NginxController extends AbstractController{
             log.info("文件存在，转发至Nginx");
             xAccelRedirectFile(file, response, path, name);
         } else {
-            log.info("文件不存在");
+            log.info("文件不存在,路径：【{}】", file.getPath());
             response.sendError(404);
         }
     }
@@ -55,20 +52,14 @@ public class NginxController extends AbstractController{
     protected void xAccelRedirectFile(File file, HttpServletResponse response, String path, String name) throws UnsupportedEncodingException {
         String encoding = response.getCharacterEncoding();
         response.setHeader("Content-Type", "application/octet-stream;");
-        response.setHeader("X-Accel-Redirect", "/file/" + toPathEncoding(encoding, path));
+        response.setHeader("X-Accel-Redirect", "/file/" +
+                URLEncoder.encode(path,"UTF-8"));
         response.setHeader("X-Accel-Charset", "utf-8");
         response.setHeader("Content-Disposition", "attachment; filename=" +
                 URLEncoder.encode(name,"UTF-8")
         );
         System.out.println(response.getHeader("X-Accel-Redirect"));
         System.out.println(response.getHeader("Content-Disposition"));
-//        response.setContentLength((int) file.contentLength());
-    }
-
-    //如果存在中文文件名或中文路径需要对其进行编码成 iSO-8859-1
-    //否则会导致 nginx无法找到文件及弹出的文件下载框也会乱码
-    private String toPathEncoding(String origEncoding, String fileName) throws UnsupportedEncodingException {
-        return new String(fileName.getBytes(origEncoding), DEFAULT_FILE_ENCODING);
     }
 
 }
