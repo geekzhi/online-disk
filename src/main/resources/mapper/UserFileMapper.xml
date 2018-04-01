@@ -83,6 +83,10 @@
         </trim>
     </sql>
 
+    <select id="getFileById" parameterType="String" resultMap="userFile">
+        select <include refid="selectColumns"/> from user_file where id = #{id}
+    </select>
+
     <select id = "getFileList" parameterType="String" resultMap="userFile">
         select <include refid="selectColumns"/> from user_file where userId = #{userId}
     </select>
@@ -91,7 +95,7 @@
         select <include refid="selectColumns"/>
           from user_file
           where userId = #{userId} and parentPath = #{parentPath}
-        group by type, name
+        group by type, name, id
     </select>
 
     <select id = "getFileListByType" parameterType="String" resultMap="userFile">

@@ -2,6 +2,8 @@ package com.geekzhang.demo.service.impl;
 
 import com.geekzhang.demo.enums.ResponseCode;
 import com.geekzhang.demo.mapper.UserFileMapper;
+import com.geekzhang.demo.mapper.UserMapper;
+import com.geekzhang.demo.orm.User;
 import com.geekzhang.demo.orm.UserFile;
 import com.geekzhang.demo.service.UserFileService;
 import com.geekzhang.demo.util.FileUtil;
@@ -31,6 +33,9 @@ public class UserFileServiceImpl implements UserFileService {
     @Autowired
     private UserFileMapper userFileMapper;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @Value("${web.var.filePath}")
     private String filePath;
 
@@ -42,9 +47,18 @@ public class UserFileServiceImpl implements UserFileService {
         Map<String, String> map = new HashMap<>();
         for(MultipartFile file : files) {
             String fileType = file.getContentType().split("/")[0];
-            if (!FileUtil.getAllowType(fileType)) {
-                log.info("文件上传|不支持的文件类型");
-                map.put("error", "不支持的文件类型");
+//            if (!FileUtil.getAllowType(fileType)) {
+//                log.info("文件上传|不支持的文件类型");
+//                map.put("error", "不支持的文件类型");
+//                return map;
+//            }
+            /**
+             * 判断是否超过用户网盘容量
+             */
+            User user = userMapper.findById(userId);
+            if(Long.valueOf(user.getSize()) < Long.valueOf(user.getUse()) + file.getSize() / 1024) {
+                log.info("文件上传|文件大小超过用户容量");
+                map.put("error", "网盘容量不足，请扩容");
                 return map;
             }
             if(StringUtils.isEmpty(parentPath)) parentPath = "/";
@@ -61,7 +75,13 @@ public class UserFileServiceImpl implements UserFileService {
                 newFile.setUserId(Integer.valueOf(userId));
                 newFile.setSize((String) fileMap.get("size"));
                 newFile.setParentPath(parentPath);
-                userFileMapper.insert(newFile);
+                Map<String, String> usePlusMap = new HashMap<>();
+                usePlusMap.put("userId", userId);
+                usePlusMap.put("size", newFile.getSize());
+                int i = userMapper.usePlus(usePlusMap);
+                System.out.println(newFile.toString());
+                int j = userFileMapper.insert(newFile);
+                log.info("i:{},j{}",i,j);
                 log.info("文件上传|已存入userId：【{}】的文件：【{}】", userId, newFile.getName());
                 return map;
             } else {

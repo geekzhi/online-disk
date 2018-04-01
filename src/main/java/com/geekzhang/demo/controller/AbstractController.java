@@ -60,10 +60,16 @@ public class AbstractController {
      */
     public String getUserToken() {
         String token = request().getHeader("Authorization");
-        log.info("--getUserToken--" + token);
         if (StringUtils.isEmpty(token)) {
-            return null;
+            token = request().getParameter("token");
+            if(StringUtils.isEmpty(token)){
+                return null;
+            } else {
+                log.info("用户token为：【{}】" , token);
+                return token;
+            }
         } else {
+            log.info("用户token为：【{}】" , token);
             return token;
         }
     }
