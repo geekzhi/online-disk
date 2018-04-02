@@ -15,10 +15,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Description:
@@ -175,6 +172,36 @@ public class UserFileServiceImpl implements UserFileService {
         map.put("code", ResponseCode.SUCCESS.getCode());
         map.put("msg", ResponseCode.SUCCESS.getDesc());
         map.put("data", list);
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> deleteFile(String id, String type) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> paraMap = new HashMap<>();
+        int success = 0;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DAY_OF_MONTH, 10);
+
+        paraMap.put("id", id);
+        paraMap.put("deleteFlag", 1);
+        paraMap.put("deleteTime", calendar.getTime());
+
+        success = userFileMapper.updateFileDeleteById(paraMap);
+
+        if("folder".equals(type) && success > 0){
+            success = userFileMapper.updateFolderDeleteById(paraMap);
+        }
+        if(success > 0) {
+            log.info("删除文件|成功");
+            map.put("code", ResponseCode.SUCCESS.getCode());
+            map.put("msg", ResponseCode.SUCCESS.getDesc());
+        } else {
+            log.info("删除文件|失败");
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
         return map;
     }
 }

@@ -94,8 +94,8 @@
     <select id = "getFileListByPath" parameterType="String" resultMap="userFile">
         select <include refid="selectColumns"/>
           from user_file
-          where userId = #{userId} and parentPath = #{parentPath}
-        group by type, name, id
+          where `userId` = #{userId} and `parentPath` = #{parentPath} and `delete` = 0
+        group by path, name, id
     </select>
 
     <select id = "getFileListByType" parameterType="String" resultMap="userFile">
@@ -109,4 +109,18 @@
     <insert id="insertFolder" parameterType="String">
         insert into user_file (userId, name, parentPath) values (#{userId}, #{name}, #{parentPath})
     </insert>
+
+    <update id="updateFolderDeleteById">
+        update user_file u set `delete` = #{deleteFlag}, `deleteTime` = #{deleteTime} where u.id in(
+          select a.id from (
+            select id from user_file where parentPath = (
+              select concat(parentPath , name) from user_file where id = #{id}
+		    )
+	      ) a
+        )
+    </update>
+
+    <update id="updateFileDeleteById">
+        update user_file set `delete` = #{deleteFlag}, `deleteTime` = #{deleteTime} where `id` = #{id}
+    </update>
 </mapper>
