@@ -87,4 +87,19 @@ public class FileController extends AbstractController {
        }
        return map;
     }
+
+    @RequestMapping(value = "/delete", method = {RequestMethod.POST})
+    public Map<String, Object> deleteFile (@RequestParam String id, @RequestParam String type) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            log.info("删除文件|文件ID：【{}】，类型：【{}】", id, type );
+            map = userFileService.deleteFile(id, type);
+
+        }catch (Exception e) {
+            log.info("删除文件|异常：【{}】", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
 }

@@ -20,4 +20,6 @@ public interface UserFileService {
     Map<String, Object> newFolder(String userId, String parentPath);
 
     Map<String, Object> getFileListByPath(String userId, String parentPath);
+
+    Map<String, Object> deleteFile(String id, String type);
 }

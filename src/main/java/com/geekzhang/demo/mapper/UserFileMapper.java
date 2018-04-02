@@ -23,4 +23,8 @@ public interface UserFileMapper {
     List<UserFile> getFileListByPath(Map map);
 
     UserFile getFileById(String id);
+
+    int updateFileDeleteById(Map map);
+
+    int updateFolderDeleteById(Map map);
 }
