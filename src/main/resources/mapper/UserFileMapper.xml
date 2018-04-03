@@ -83,6 +83,18 @@
         </trim>
     </sql>
 
+    <select id="getTotalByType" parameterType="String" resultType="Integer">
+        select count(*) from user_file where userId = #{userId} and `type` = #{type}
+    </select>
+
+    <select id="getTotalTrash" parameterType="String" resultType="Integer">
+        select count(*) from user_file where userId = #{userId} and `delete` = 1
+    </select>
+
+    <select id="getTrashFileList" parameterType="String" resultMap="userFile">
+        select <include refid="selectColumns"/> from user_file where userId = #{userId} and `delete` = 1
+    </select>
+
     <select id="getFileById" parameterType="String" resultMap="userFile">
         select <include refid="selectColumns"/> from user_file where id = #{id}
     </select>

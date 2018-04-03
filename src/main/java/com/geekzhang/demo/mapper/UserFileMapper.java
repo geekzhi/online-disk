@@ -12,11 +12,18 @@ import java.util.Map;
  * @version: V1.0
  */
 public interface UserFileMapper {
+
+    int getTotalByType(Map map);
+
+    int getTotalTrash(String userId);
+
     int insert(UserFile userFile);
 
     List<UserFile> getFileList(String userId);
 
     List<UserFile> getFileListByType(Map map);
+
+    List<UserFile> getTrashFileList(String userId);
 
     int insertFolder(Map map);
 

@@ -46,12 +46,12 @@ public class FileController extends AbstractController {
         return map;
     }
 
-    @RequestMapping(value = "/fileList/{fileType}", method = {RequestMethod.GET})
-    public Map<String, Object> getFileListByType(@PathVariable String fileType) {
+    @RequestMapping(value = "/fileList/{fileType}/{pageNum}", method = {RequestMethod.GET})
+    public Map<String, Object> getFileListByType(@PathVariable String fileType, @PathVariable String pageNum) {
         Map<String, Object> map = new HashMap<>();
         try {
             String userId = getUserId();
-            map = userFileService.getFileListByType(userId, fileType);
+            map = userFileService.getFileListByType(userId, fileType, pageNum);
         } catch (Exception e) {
             log.info("获取用户文件|异常：【{}】", e);
             map.put("code", ResponseCode.WRONG.getCode());

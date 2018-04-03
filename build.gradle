@@ -48,5 +48,9 @@ dependencies {
 	//fastjson
 	compile 'com.alibaba:fastjson:1.2.41'
 
+	//邮件
 	compile 'org.apache.commons:commons-email:1.5'
+
+	//分页
+	compile 'com.github.pagehelper:pagehelper-spring-boot-starter:1.2.3'
 }
