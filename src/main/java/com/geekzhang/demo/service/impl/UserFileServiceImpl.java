@@ -7,6 +7,7 @@ import com.geekzhang.demo.orm.User;
 import com.geekzhang.demo.orm.UserFile;
 import com.geekzhang.demo.service.UserFileService;
 import com.geekzhang.demo.util.FileUtil;
+import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +39,9 @@ public class UserFileServiceImpl implements UserFileService {
 
     @Value("${web.var.splitPath}")
     private String splitPath;
+
+    @Value("${web.var.pageSize}")
+    private String pageSize;
 
     @Override
     public Map<String, String> uploadFile(String userId, List<MultipartFile> files, String parentPath) {
@@ -91,19 +95,26 @@ public class UserFileServiceImpl implements UserFileService {
     }
 
     @Override
-    public Map<String, Object> getFileListByType(String userId, String fileType) {
+    public Map<String, Object> getFileListByType(String userId, String fileType, String pageNum) {
         Map<String, Object> map = new HashMap<>();
         Map<String, String> findMap = new HashMap<>();
         List<UserFile> fileList;
+        int total = 0;
         findMap.put("userId", userId);
         findMap.put("type", fileType);
         log.info("获取文件|usrId:[{}],文件类型:[{}]", userId, fileType);
-        if("all".equals(fileType)){
-            fileList = userFileMapper.getFileList(userId);
+        //请求的是回收站中文件
+        if("trash".equals(fileType)){
+            total = userFileMapper.getTotalTrash(userId);
+            PageHelper.startPage(Integer.valueOf(pageNum),Integer.valueOf(pageSize));
+            fileList = userFileMapper.getTrashFileList(userId);
         }else {
+            total = userFileMapper.getTotalByType(findMap);
+            PageHelper.startPage(Integer.valueOf(pageNum),Integer.valueOf(pageSize));
             fileList = userFileMapper.getFileListByType(findMap);
         }
         map.put("data", fileList);
+        map.put("page", (total/Integer.valueOf(pageSize)) + 1);
         return map;
     }
 

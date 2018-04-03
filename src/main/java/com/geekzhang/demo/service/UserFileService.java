@@ -15,7 +15,7 @@ public interface UserFileService {
 
     Map<String, String> uploadFile(String userId, List<MultipartFile> files, String parentPath);
 
-    Map<String, Object> getFileListByType(String userId, String fileType);
+    Map<String, Object> getFileListByType(String userId, String fileType, String pageNum);
 
     Map<String, Object> newFolder(String userId, String parentPath);
 
