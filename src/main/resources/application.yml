@@ -32,7 +32,7 @@ spring:
 
 web:
   var:
-    forgot: http://local.local:8080/change.html?id=
+    forgot: http://localhost:8081/change.html?id=
     filePath: /Users/zhangpengzhi/WebstormProjects/static/
     splitPath: static/
     pageSize: 10

@@ -181,6 +181,7 @@ public class UserServiceImpl implements UserService {
             log.info("修改密码|用户邮箱：[{}],新密码：[{}]", email, newPass);
             if(i > 0) {
                 log.info("修改密码|修改成功");
+                redisClient.delCacheByKey(id);
                 map.put("code", ResponseCode.SUCCESS.getCode());
                 map.put("msg", ResponseCode.SUCCESS.getDesc());
             } else {

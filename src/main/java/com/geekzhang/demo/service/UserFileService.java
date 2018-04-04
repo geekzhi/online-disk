@@ -22,4 +22,6 @@ public interface UserFileService {
     Map<String, Object> getFileListByPath(String userId, String parentPath);
 
     Map<String, Object> deleteFile(String id, String type);
+
+    Map<String, Object> modifyFileName(String fileId, String fileNewName, String fileType, String userId);
 }

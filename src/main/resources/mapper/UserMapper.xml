@@ -15,15 +15,15 @@
     </resultMap>
 
     <sql id="columns">
-        id, name, pass, email, vip, size, use
+        `id`, `name`, `pass`, `email`, `vip`, `size`, `use`
     </sql>
 
     <sql id="columns1">
-        name, pass, email
+        `name`, `pass`, `email`
     </sql>
 
     <select id = "findByName" parameterType = "java.lang.String" resultMap="user">
-        select * from user where name = #{name}
+        select * from user where `name` = #{name}
     </select>
     
     <select id = "findAll" resultMap="user">
@@ -31,12 +31,12 @@
     </select>
 
     <select id = "findById" parameterType = "java.lang.String" resultMap="user">
-        select * from user where id = #{id}
+        select * from user where `id` = #{id}
     </select>
 
     <select id = "findByEmail" resultMap="user" parameterType="java.lang.String">
         select <include refid="columns"/> from user
-          where email = #{email}
+          where `email` = #{email}
     </select>
 
     <insert id="insert" parameterType="com.geekzhang.demo.orm.User">
