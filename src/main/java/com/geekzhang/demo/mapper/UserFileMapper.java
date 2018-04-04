@@ -19,6 +19,8 @@ public interface UserFileMapper {
 
     int insert(UserFile userFile);
 
+    int getFileNumByParentPath(String parentPath);
+
     List<UserFile> getFileList(String userId);
 
     List<UserFile> getFileListByType(Map map);
@@ -34,4 +36,9 @@ public interface UserFileMapper {
     int updateFileDeleteById(Map map);
 
     int updateFolderDeleteById(Map map);
+
+    int modifyFileNameById(Map map);
+
+    int modifyFolderName(Map map);
+
 }

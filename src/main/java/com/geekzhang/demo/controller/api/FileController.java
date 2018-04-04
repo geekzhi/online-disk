@@ -102,4 +102,19 @@ public class FileController extends AbstractController {
         }
         return map;
     }
+
+    @RequestMapping(value = "/{fileId}/{fileNewName}/{fileType}", method = {RequestMethod.PUT})
+    public Map<String, Object> modifyFileName (@PathVariable String fileId, @PathVariable String fileNewName, @PathVariable String fileType) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            log.info("修改文件名|文件id:【{}】, 新的文件名：【{}】, 文件类型：【{}】", fileId, fileNewName, fileType);
+            map = userFileService.modifyFileName(fileId, fileNewName, fileType, getUserId());
+        }catch (Exception e) {
+            log.info("修改文件名|异常：【{}】", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+
+        return map;
+    }
 }

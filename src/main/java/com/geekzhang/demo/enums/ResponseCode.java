@@ -15,7 +15,8 @@ public enum ResponseCode {
     EMAIL_NOTEXIST("R005", "邮箱不存在"),
     MODIFY_PSS_FAIL("P001", "修改失败"),
     FILE_UPLOAD_FAIL("F001", "文件上传失败"),
-    FILE_TYPE_WRONG("F002","不支持的文件类型");
+    FILE_TYPE_WRONG("F002","不支持的文件类型"),
+    FILE_NAME_REPET("F003", "文件名重复");
 
     private final String code;
     private final String desc;

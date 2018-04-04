@@ -198,18 +198,37 @@ public class UserFileServiceImpl implements UserFileService {
         paraMap.put("id", id);
         paraMap.put("deleteFlag", 1);
         paraMap.put("deleteTime", calendar.getTime());
-
         success = userFileMapper.updateFileDeleteById(paraMap);
-
-        if("folder".equals(type) && success > 0){
-            success = userFileMapper.updateFolderDeleteById(paraMap);
-        }
         if(success > 0) {
             log.info("删除文件|成功");
             map.put("code", ResponseCode.SUCCESS.getCode());
             map.put("msg", ResponseCode.SUCCESS.getDesc());
         } else {
             log.info("删除文件|失败");
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> modifyFileName(String fileId, String fileNewName, String fileType, String userId) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, String> paraMap = new HashMap<>();
+        int success = 0;
+        paraMap.put("id", fileId);
+        paraMap.put("userId", userId);
+        if("folder".equals(fileType)){
+            paraMap.put("suffixName", fileNewName);
+            success = userFileMapper.modifyFolderName(paraMap);
+        }else {
+            paraMap.put("name", fileNewName);
+            success = userFileMapper.modifyFileNameById(paraMap);
+        }
+        if(success > 0) {
+            map.put("code", ResponseCode.SUCCESS.getCode());
+            map.put("msg", ResponseCode.SUCCESS.getDesc());
+        } else {
             map.put("code", ResponseCode.WRONG.getCode());
             map.put("msg", ResponseCode.WRONG.getDesc());
         }

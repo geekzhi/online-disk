@@ -103,6 +103,10 @@
         select <include refid="selectColumns"/> from user_file where userId = #{userId}
     </select>
 
+    <select id="getFileNumByParentPath" parameterType="String" resultType="Integer">
+        select count(*) from user_file where `parentPath` = #{parentPath}
+    </select>
+
     <select id = "getFileListByPath" parameterType="String" resultMap="userFile">
         select <include refid="selectColumns"/>
           from user_file
@@ -119,7 +123,7 @@
     </insert>
 
     <insert id="insertFolder" parameterType="String">
-        insert into user_file (userId, name, parentPath) values (#{userId}, #{name}, #{parentPath})
+        insert into user_file (userId, name, suffixName, parentPath) values (#{userId}, #{name}, #{name}, #{parentPath})
     </insert>
 
     <update id="updateFolderDeleteById">
@@ -135,4 +139,14 @@
     <update id="updateFileDeleteById">
         update user_file set `delete` = #{deleteFlag}, `deleteTime` = #{deleteTime} where `id` = #{id}
     </update>
+
+    <update id="modifyFileNameById">
+        update user_file set `name` = #{name} where `id` = #{id} and `userId` = #{userId}
+    </update>
+
+    <update id="modifyFolderName">
+        update user_file set `suffixName` = #{suffixName} where `id` = #{id} and `userId` = #{userId}
+    </update>
+
+
 </mapper>
