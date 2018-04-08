@@ -47,7 +47,7 @@ public class NginxController extends AbstractController{
         File file = new File(filePath+path);
         if (file != null && file.exists()) {
             log.info("文件存在，转发至Nginx");
-            if(String.valueOf(userFile.getUserId()) == getUserId()) {
+            if(String.valueOf(userFile.getUserId()).equals(getUserId())) {
                 log.info("获取文件为本人");
                 xAccelRedirectFile(file, response, path, name);
             }else{
