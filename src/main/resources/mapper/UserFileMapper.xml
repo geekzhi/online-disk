@@ -13,10 +13,16 @@
         <result property="userId" column="userId"/>
         <result property="size" column="size"/>
         <result property="parentPath" column="parentPath"/>
+        <result property="delete" column="delete"/>
+        <result property="deleteTime" column="deleteTime"/>
+        <result property="shareCode" column="shareCode"/>
+        <result property="shareValid" column="shareValid"/>
+        <result property="sharePass" column="sharePass"/>
+        <result property="shareTime" column="shareTime"/>
     </resultMap>
 
     <sql id="selectColumns">
-        id, name, suffixName, path, type, userId, size, parentPath
+        `id`, `name`, `suffixName`, `path`, `type`, `userId`, `size`, `parentPath`, `delete`, `deleteTime`, `shareCode`, `shareValid`, `sharePass`, `shareTime`
     </sql>
 
     <sql id="insertColumns">
@@ -99,6 +105,10 @@
         select <include refid="selectColumns"/> from user_file where id = #{id}
     </select>
 
+    <select id="getFileByShareCode" parameterType="String" resultMap="userFile">
+        select <include refid="selectColumns"/> from user_file where shareCode = #{shareCode}
+    </select>
+
     <select id = "getFileList" parameterType="String" resultMap="userFile">
         select <include refid="selectColumns"/> from user_file where userId = #{userId}
     </select>
@@ -148,5 +158,13 @@
         update user_file set `suffixName` = #{suffixName} where `id` = #{id} and `userId` = #{userId}
     </update>
 
+    <update id="updateShareFile">
+        update user_file
+        set `shareValid` = #{shareValid},
+             `sharePass` = #{sharePass},
+             `shareCode` = #{shareCode},
+             `shareTime` = #{shareTime}
+        where `id` = #{id} and `userId` = #{userId}
+    </update>
 
 </mapper>

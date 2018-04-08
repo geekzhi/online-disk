@@ -16,7 +16,9 @@ public enum ResponseCode {
     MODIFY_PSS_FAIL("P001", "修改失败"),
     FILE_UPLOAD_FAIL("F001", "文件上传失败"),
     FILE_TYPE_WRONG("F002","不支持的文件类型"),
-    FILE_NAME_REPET("F003", "文件名重复");
+    FILE_NAME_REPET("F003", "文件名重复"),
+    FILE_SHARE_TIMEOUT("F004", "文件分享已失效"),
+    FILE_SHARE_PASS_WRONG("F005", "文件分享密码错误");
 
     private final String code;
     private final String desc;

@@ -31,6 +31,11 @@ public class UserServiceImpl implements UserService {
     @Value("${web.var.forgot}")
     private String forgotUrl;
 
+    /**
+     * 登录
+     * @param user
+     * @return
+     */
     @Override
     public Map<String, Object> login(User user) {
         Map<String, Object> map = new HashMap<>();
@@ -55,7 +60,7 @@ public class UserServiceImpl implements UserService {
                 String token = TokenUtil.getJWTString(usrId, claim);
                 log.info("用户登录|用户名密码正确，生成token:[{}]", token);
                 if("on".equals(remember)) {
-                    redisClient.setCacheValueForTime(usrId, token, 5*60);
+                    redisClient.setCacheValueForTime(usrId, token, 7*24*60*60);
                 } else {
                     redisClient.setCacheValueForTime(usrId, token, 24*60*60);
                 }
@@ -71,6 +76,11 @@ public class UserServiceImpl implements UserService {
         return map;
     }
 
+    /**
+     * 注册
+     * @param user
+     * @return
+     */
     public Map<String, Object> register(User user){
         Map<String, Object> map = new HashMap<>();
         if(!StringUtils.isEmpty(user.getName())
@@ -114,6 +124,11 @@ public class UserServiceImpl implements UserService {
         return map;
     }
 
+    /**
+     * 注册发送验证码
+     * @param email
+     * @return
+     */
     public Map<String, Object> sendVerifyCode(String email) {
         Map<String, Object> map = new HashMap<>();
         if(DataUtil.isEmail(email)){
@@ -144,6 +159,11 @@ public class UserServiceImpl implements UserService {
         return map;
     }
 
+    /**
+     * 找回密码
+     * @param email
+     * @return
+     */
     public Map<String ,Object> forgotPass(String email) {
         Map<String, Object> map = new HashMap<>();
         if(!DataUtil.isEmail(email)) {
@@ -170,6 +190,12 @@ public class UserServiceImpl implements UserService {
         return map;
     }
 
+    /**
+     * 修改密码
+     * @param id
+     * @param newPass
+     * @return
+     */
     public Map<String, Object> changePass(String id, String newPass) {
         Map<String, Object> map = new HashMap<>();
         if(redisClient.exists(id)){
@@ -197,6 +223,11 @@ public class UserServiceImpl implements UserService {
         return map;
     }
 
+    /**
+     * 登出
+     * @param userId
+     * @return
+     */
     @Override
     public Map<String, Object> logout(String userId) {
         Map<String, Object> map= new HashMap<>();

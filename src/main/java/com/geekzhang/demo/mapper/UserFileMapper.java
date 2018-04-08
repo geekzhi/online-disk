@@ -1,6 +1,7 @@
 package com.geekzhang.demo.mapper;
 
 import com.geekzhang.demo.orm.UserFile;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,8 @@ public interface UserFileMapper {
 
     UserFile getFileById(String id);
 
+    UserFile getFileByShareCode(String shareCode);
+
     int updateFileDeleteById(Map map);
 
     int updateFolderDeleteById(Map map);
@@ -40,5 +43,7 @@ public interface UserFileMapper {
     int modifyFileNameById(Map map);
 
     int modifyFolderName(Map map);
+
+    int updateShareFile(Map map);
 
 }
