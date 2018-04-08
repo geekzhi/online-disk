@@ -358,12 +358,14 @@ public class UserFileServiceImpl implements UserFileService {
         //非永久分享并且redis中无分享码
         if (!"2".equals(userFile.getShareValid())
                 && StringUtils.isEmpty(redisClient.getCacheValue("shareFile" + userFile.getId()))) {
+            log.info("文件分享|文件非永久分享并且redis中无分享码");
             map.put("code", ResponseCode.FILE_SHARE_TIMEOUT.getCode());
             map.put("msg", ResponseCode.FILE_SHARE_TIMEOUT.getDesc());
             return map;
         }
         //文件分享存在
         if (!StringUtils.isEmpty(userFile.getSharePass()) && StringUtils.isEmpty(pass)) {
+            log.info("文件分享|文件为加密分享");
             dataMap.put("encrypt", "yes");
         } else {
             if (!StringUtils.isEmpty(pass) && !pass.equals(userFile.getSharePass())) {
