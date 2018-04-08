@@ -24,4 +24,8 @@ public interface UserFileService {
     Map<String, Object> deleteFile(String id, String type);
 
     Map<String, Object> modifyFileName(String fileId, String fileNewName, String fileType, String userId);
+
+    Map<String, Object> shareFile(String fileId, String shareTime, String shareType, String userId);
+
+    Map<String, Object> shareDownload(String code, String pass, String userId);
 }

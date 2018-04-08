@@ -3,10 +3,12 @@ package com.geekzhang.demo.controller.api;
 import com.geekzhang.demo.controller.AbstractController;
 import com.geekzhang.demo.mapper.UserFileMapper;
 import com.geekzhang.demo.orm.UserFile;
+import com.geekzhang.demo.redis.RedisClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -30,11 +32,14 @@ public class NginxController extends AbstractController{
     @Autowired
     private UserFileMapper userFileMapper;
 
+    @Autowired
+    private RedisClient redisClient;
+
     @Value("${web.var.filePath}")
     private String filePath;
 
     @RequestMapping("/file/{id}")
-    public void passNginx(@PathVariable("id") String id, final HttpServletResponse response) throws IOException {
+    public void passNginx(@PathVariable("id") String id, String verifyCode, final HttpServletResponse response) throws IOException {
         log.info("用户请求文件|用户名:【{}】", getUserName());
         UserFile userFile = userFileMapper.getFileById(id);
         String path = userFile.getPath();
@@ -42,7 +47,19 @@ public class NginxController extends AbstractController{
         File file = new File(filePath+path);
         if (file != null && file.exists()) {
             log.info("文件存在，转发至Nginx");
-            xAccelRedirectFile(file, response, path, name);
+            if(String.valueOf(userFile.getUserId()) == getUserId()) {
+                log.info("获取文件为本人");
+                xAccelRedirectFile(file, response, path, name);
+            }else{
+                String trueVerifyCode = redisClient.getCacheValue("shareFileVerifyCode" + getUserId());
+                log.info("获取文件非本人，识别码：【{}】,redis中存储的识别码：【{}】", verifyCode, trueVerifyCode);
+                if(!StringUtils.isEmpty(trueVerifyCode) && !StringUtils.isEmpty(verifyCode) && trueVerifyCode.equals(verifyCode)){
+                    xAccelRedirectFile(file, response, path, name);
+                } else {
+                    log.info("非法请求");
+                    response.sendError(404);
+                }
+            }
         } else {
             log.info("文件不存在,路径：【{}】", file.getPath());
             response.sendError(404);

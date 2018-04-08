@@ -117,4 +117,38 @@ public class FileController extends AbstractController {
 
         return map;
     }
+
+    /**
+     * 分享文件
+     */
+    @RequestMapping(value = "/share", method = {RequestMethod.POST})
+    public Map<String, Object> shareFile (@RequestParam String id, @RequestParam String shareTime, @RequestParam String shareType){
+        Map<String, Object> map = new HashMap<>();
+        try {
+            log.info("分享文件|文件id:【{}】, 分享类型：【{}】, 有效期限：【{}】", id, shareType, shareTime);
+            map = userFileService.shareFile(id, shareTime, shareType, getUserId());
+        }catch (Exception e) {
+            log.info("分享文件|异常：【{}】", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
+
+    /**
+     * 获取分享文件信息
+     */
+    @RequestMapping(value = "/shareDownload", method = {RequestMethod.POST})
+    public Map<String, Object> shareDownload(String code, String pass){
+        Map<String, Object> map = new HashMap<>();
+        try {
+            log.info("获取分享文件信息|分享码：【{}】", code);
+            map = userFileService.shareDownload(code, pass, getUserId());
+        }catch (Exception e) {
+            log.info("获取分享文件信息|异常：【{}】", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
 }

@@ -33,6 +33,7 @@ spring:
 web:
   var:
     forgot: http://localhost:8081/change.html?id=
+    share: http://localhost:8081/share.html?code=
     filePath: /Users/zhangpengzhi/WebstormProjects/static/
     splitPath: static/
     pageSize: 10
@@ -60,6 +61,7 @@ spring:
 web:
   var:
     forgot: http://106.15.183.161/change.html?id=
+    share: http://106.15.183.161/share.html?code=
     filePath: /online-disk/static/
     splitPath: static/
     pageSize: 10
