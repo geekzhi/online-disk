@@ -356,9 +356,9 @@ public class UserFileServiceImpl implements UserFileService {
             return map;
         }
         //非永久分享并且redis中无分享码
-        if (!"2".equals(userFile.getShareValid())
+        if (2 != userFile.getShareValid()
                 && StringUtils.isEmpty(redisClient.getCacheValue("shareFile" + userFile.getId()))) {
-            log.info("文件分享|文件非永久分享并且redis中无分享码" + userFile.getShareValid() + "2".equals(userFile.getShareValid()));
+            log.info("文件分享|文件非永久分享并且redis中无分享码");
             map.put("code", ResponseCode.FILE_SHARE_TIMEOUT.getCode());
             map.put("msg", ResponseCode.FILE_SHARE_TIMEOUT.getDesc());
             return map;
