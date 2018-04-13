@@ -13,4 +13,5 @@ public class User {
     String vip; //1:vip 0:非vip
     String size; //网盘大小 Kb
     String use; //已使用大小 Kb
+    String pic; //头像地址
 }

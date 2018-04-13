@@ -14,7 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import sun.misc.BASE64Decoder;
 
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +34,34 @@ public class UserServiceImpl implements UserService {
 
     @Value("${web.var.forgot}")
     private String forgotUrl;
+
+    @Override
+    public Map<String, Object> getUserInfo(String userId) {
+        Map<String, Object> map = new HashMap<>();
+        User user = userMapper.findById(userId);
+        User userDto = new User();
+        userDto.setName(user.getName());
+        userDto.setVip(user.getVip());
+        userDto.setSize(user.getSize());
+        userDto.setUse(user.getUse());
+        userDto.setPic(user.getPic());
+        String []s = user.getEmail().split("@");
+        char []ch = s[0].toCharArray();
+        if(ch.length < 5) {
+            for (int i = 1; i < ch.length-1; i++){
+                ch[i] = '*';
+            }
+        }else {
+            for (int i = 2; i < ch.length-2; i++){
+                ch[i] = '*';
+            }
+        }
+        userDto.setEmail(new String(ch) + "@" + s[1]);
+        map.put("code", ResponseCode.SUCCESS.getCode());
+        map.put("msg", ResponseCode.SUCCESS.getDesc());
+        map.put("data", userDto);
+        return map;
+    }
 
     /**
      * 登录
@@ -240,6 +272,27 @@ public class UserServiceImpl implements UserService {
             log.info("token不存在");
             map.put("code", ResponseCode.WRONG.getCode());
             map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> changeAvatar(String image, String userId) {
+        Map<String, Object> map = new HashMap<>();
+        if (image == null) //图像数据为空
+            return null;
+        User user = new User();
+        user.setId(Integer.valueOf(userId));
+        user.setPic(image);
+        int i = userMapper.update(user);
+        if(i > 0) {
+            map.put("code", ResponseCode.SUCCESS.getCode());
+            map.put("msg", ResponseCode.SUCCESS.getDesc());
+            map.put("result", "上传成功");
+        } else {
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+            map.put("result", "上传失败");
         }
         return map;
     }

@@ -11,6 +11,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,19 +38,7 @@ public class UserController extends AbstractController{
     public Map<String, Object> getUserInfo(){
         Map<String, Object> map = new HashMap<>();
         try {
-            User u = new User();
-            u.setName(getUserName());
-            u.setVip(getUserVip());
-            u.setSize(getUserSize());
-            u.setUse(getUserUse());
-            log.info("用户信息为：[{}]", u.toString());
-            if(null != u.getName() && null != u.getVip() && null != u.getSize() && null!=u.getUse()) {
-                map.put("code", ResponseCode.SUCCESS.getCode());
-                map.put("msg", ResponseCode.SUCCESS.getDesc());
-                map.put("data", u);
-            } else {
-                throw new Exception() ;
-            }
+            map = userService.getUserInfo(getUserId());
         } catch (Exception e){
             log.error("获取用户信息异常", e);
             map.put("code", ResponseCode.WRONG.getCode());
@@ -66,6 +55,20 @@ public class UserController extends AbstractController{
             map = userService.logout(userId);
         } catch (Exception e) {
             log.error("登出异常", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
+
+    @RequestMapping(value = "/changeAvatar", method = {RequestMethod.POST})
+    public Map<String, Object> changeAvatar(String image) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String userId = getUserId();
+            map = userService.changeAvatar(image, userId);
+        } catch (Exception e) {
+            log.error("修改头像异常", e);
             map.put("code", ResponseCode.WRONG.getCode());
             map.put("msg", ResponseCode.WRONG.getDesc());
         }

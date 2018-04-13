@@ -21,4 +21,6 @@ public interface UserMapper
     int changePassByEmail(Map map);
 
     int usePlus(Map map);
+
+    int update(User user);
 }

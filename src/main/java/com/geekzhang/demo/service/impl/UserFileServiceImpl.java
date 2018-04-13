@@ -391,6 +391,10 @@ public class UserFileServiceImpl implements UserFileService {
                 String verifyCode = UuidUtil.getUuid();
                 redisClient.setCacheValueForTime("shareFileVerifyCode" + userId, verifyCode, 24 * 60 * 60);
                 dataMap.put("verifyCode", verifyCode);
+                User user = userMapper.findById(String.valueOf(userFile.getUserId()));
+                dataMap.put("avatar", user.getPic());
+                dataMap.put("userName", user.getName());
+                dataMap.put("id", String.valueOf(user.getId()));
             }
         }
         map.put("code", ResponseCode.SUCCESS.getCode());
