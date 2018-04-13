@@ -12,14 +12,47 @@
         <result property="vip" column="vip"/>
         <result property="size" column="size"/>
         <result property="use" column="use"/>
+        <result property="pic" column="pic"/>
     </resultMap>
 
     <sql id="columns">
-        `id`, `name`, `pass`, `email`, `vip`, `size`, `use`
+        `id`, `name`, `pass`, `email`, `vip`, `size`, `use`, `pic`
     </sql>
 
     <sql id="columns1">
         `name`, `pass`, `email`
+    </sql>
+
+    <sql id="updateColumns">
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null">
+                `name` = #{name},
+            </if>
+
+            <if test="pass!=null">
+                `pass` = #{pass},
+            </if>
+
+            <if test="email!=null">
+                `email` = #{email},
+            </if>
+
+            <if test="vip!=null">
+                `vip` = #{vip},
+            </if>
+
+            <if test="size!=null">
+                `size` = #{size},
+            </if>
+
+            <if test="use!=null">
+                `use` = #{use},
+            </if>
+
+            <if test="pic!=null">
+                `pic` = #{pic},
+            </if>
+        </trim>
     </sql>
 
     <select id = "findByName" parameterType = "java.lang.String" resultMap="user">
@@ -55,4 +88,7 @@
         update user u set u.use = u.use + #{size} where id = #{userId}
     </update>
 
+    <update id="update" parameterType="com.geekzhang.demo.orm.User">
+        update user <include refid="updateColumns"/> where id = #{id}
+    </update>
 </mapper>

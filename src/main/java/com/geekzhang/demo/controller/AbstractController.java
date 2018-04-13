@@ -118,4 +118,5 @@ public class AbstractController {
     public String getUserUse(){
         return TokenUtil.getUserUse(getUserToken());
     }
+
 }

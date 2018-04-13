@@ -6,6 +6,8 @@ import java.util.Map;
 
 public interface UserService {
 
+    Map<String, Object> getUserInfo(String userId);
+
     Map<String, Object> login(User user);
 
     Map<String, Object> register(User user);
@@ -17,4 +19,6 @@ public interface UserService {
     Map<String, Object> changePass(String id, String newPass);
 
     Map<String, Object> logout(String userId);
+
+    Map<String, Object> changeAvatar(String image, String userId);
 }
