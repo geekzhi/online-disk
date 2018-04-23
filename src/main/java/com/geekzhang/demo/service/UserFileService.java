@@ -28,4 +28,10 @@ public interface UserFileService {
     Map<String, Object> shareFile(String fileId, String shareTime, String shareType, String userId);
 
     Map<String, Object> shareDownload(String code, String pass, String userId);
+
+    Map<String, Object> getStatistics(String userId);
+
+    Map<String, Object> recoverChoose(String userId, String id);
+
+    Map<String, Object> recoverAll(String userId);
 }

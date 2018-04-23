@@ -21,4 +21,20 @@ public interface UserService {
     Map<String, Object> logout(String userId);
 
     Map<String, Object> changeAvatar(String image, String userId);
+
+    Map<String, Object> follow(String id, String userId);
+
+    Map<String, Object> getFriendsList(String userId);
+
+    Map<String, Object> addFriends(String userId, String name);
+
+    Map<String, Object> getFriendNotice(String userId);
+
+    Map<String, Object> dealFriend(String userId, String friendId, Boolean agree);
+
+    Map<String, Object> changeName(String userId, String newName);
+
+    Map<String, Object> changeOldPass(String userId, String oldPass, String newPass);
+
+    Map<String, Object> confirgEmailVerify(String userId, String email, String code);
 }

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geekzhang.demo.mapper.FriendsMapper">
+
+    <resultMap id="friend" type="com.geekzhang.demo.orm.User">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="pic" column="pic"/>
+    </resultMap>
+
+    <resultMap id="selectFriend" type="com.geekzhang.demo.orm.Friends">
+        <result property="id" column="id"/>
+        <result property="userId" column="userId"/>
+        <result property="friendId" column="friendId"/>
+        <result property="pass" column="pass"/>
+    </resultMap>
+
+    <sql id="selectColumn">
+        <trim suffixOverrides="and">
+            <if test="friendId!=null">
+                `friendId` = #{friendId}
+            </if>
+            <if test="userId!=null">
+               and `userId` = #{userId}
+            </if>
+            <if test="pass!=null">
+               and `pass` = #{pass}
+            </if>
+        </trim>
+    </sql>
+
+    <select id="selectFriends" resultMap="friend">
+        select `id`,`name`,`pic` from user where `id` in (
+          select `friendId` from friends where `userId` = #{userId} and `pass` = #{pass}
+        )
+    </select>
+
+    <select id="selectUnPassFriends" resultMap="friend">
+        select `id`,`name`,`pic` from user where `id` in (
+        select `userId` from friends where <include refid="selectColumn"/>
+        )
+    </select>
+
+    <select id="findFriend" parameterType="String" resultMap="selectFriend">
+        select * from friends where <include refid="selectColumn"/>
+    </select>
+
+    <insert id="addFriendSingle" parameterType="String">
+        insert into friends(`userId`, `friendId`, `pass`) values (#{userId}, #{friendId}, #{pass});
+    </insert>
+
+    <update id="dealFriend">
+        update friends set `pass` = #{pass} where `userId` = #{userId} and `friendId` = #{friendId}
+    </update>
+
+
+</mapper>

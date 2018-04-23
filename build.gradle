@@ -53,4 +53,13 @@ dependencies {
 
 	//分页
 	compile 'com.github.pagehelper:pagehelper-spring-boot-starter:1.2.3'
+
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+
+	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.8.1'
+
+	compile 'com.aliyun:aliyun-java-sdk-core:3.5.0'
+
+	compile 'com.aliyun:aliyun-java-sdk-green:3.1.0'
+
 }

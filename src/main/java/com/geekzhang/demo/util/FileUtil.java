@@ -72,6 +72,15 @@ public class FileUtil {
         }
     }
 
+    public static Boolean docType(String type){
+        String[] docType = {".doc", ".excel", ".ppt", ".pdf"};
+        if(Arrays.toString(docType).contains(type)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static Boolean getAllowType(String type) {
         System.out.println(type);
         if("video".equals(type) || "image".equals(type)) {

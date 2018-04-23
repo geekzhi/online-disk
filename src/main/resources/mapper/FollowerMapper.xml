@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geekzhang.demo.mapper.FollowerMapper">
+
+    <resultMap id="follower" type="com.geekzhang.demo.orm.Follower">
+        <result property="id" column="id"/>
+        <result property="userId" column="userId"/>
+        <result property="followId" column="followId"/>
+    </resultMap>
+
+    <select id="findRecorder" resultType="int">
+        select count(*) from follower where `userId` = #{userId} and `followId` = #{followId}
+    </select>
+
+    <insert id="insert">
+        insert into follower(`userId`, `followId`) values( #{userId}, #{followId})
+    </insert>
+
+    <delete id="delete">
+        delete from follower where `userId` = #{userId} and `followId` = #{followId}
+    </delete>
+
+
+</mapper>

@@ -6,11 +6,10 @@ import com.geekzhang.demo.orm.User;
 import com.geekzhang.demo.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
@@ -69,6 +68,125 @@ public class UserController extends AbstractController{
             map = userService.changeAvatar(image, userId);
         } catch (Exception e) {
             log.error("修改头像异常", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
+
+    /**
+     * 添加关注，如果已经关注则取消关注
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/follow/{id}", method = {RequestMethod.POST})
+    public Map<String, Object> followSomeone(@PathVariable String id) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String userId = getUserId();
+            map = userService.follow(id, userId);
+        } catch (Exception e) {
+            log.error("添加关注异常", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
+
+    /**
+     * 获取好友列表
+     * @return
+     */
+    @RequestMapping(value = "/friends", method = {RequestMethod.POST})
+    public Map<String, Object> getFriendsList (){
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String userId = getUserId();
+            log.info("开始获取好友列表，用户ID:[{}]", userId);
+            map = userService.getFriendsList(userId);
+        } catch (Exception e) {
+            log.error("获取好友列表异常", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
+
+    /**
+     * 添加好友
+     * @param name
+     * @return
+     */
+    @GetMapping("/addFriends")
+    public Map<String, Object> addFriends(String name){
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String userId = getUserId();
+            log.info("添加好友，用户ID:[{}]，要添加的用户名或邮箱：【{}】", userId, name);
+            map = userService.addFriends(userId, name);
+        } catch (Exception e) {
+            log.error("添加好友异常", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
+
+    /**
+     * 修改用户名
+     * @param newName
+     * @return
+     */
+    @PutMapping("/name/{newName}")
+    public Map<String, Object> changeName(@PathVariable String newName) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String userId = getUserId();
+            log.info("修改用户名，用户ID:[{}]，新用户名：【{}】", userId, newName);
+            map = userService.changeName(userId, newName);
+        } catch (Exception e) {
+            log.error("修改用户名异常", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
+
+    /**
+     * 修改邮箱发送验证码
+     * @param oldPass
+     * @param newPass
+     * @return
+     */
+    @PutMapping("/pass/{oldPass}/{newPass}")
+    public Map<String, Object> changeOldPass(@PathVariable String oldPass, @PathVariable String newPass) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String userId = getUserId();
+            log.info("修改密码，用户ID:[{}]，旧密码：【{}】，新密码：【{}】", userId, oldPass, newPass);
+            map = userService.changeOldPass(userId, oldPass, newPass);
+        } catch (Exception e) {
+            log.error("修改密码异常", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
+
+    /**
+     * 验证新邮箱验证码
+     * @param code
+     * @return
+     */
+    @PostMapping("/newEmail")
+    public Map<String, Object> confirgEmailVerify(String email, String code){
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String userId = getUserId();
+            log.info("验证新邮箱验证码，用户ID:[{}]，新邮箱：【{}】，用户输入验证码：【{}】", userId, email, code);
+            map = userService.confirgEmailVerify(userId, email, code);
+        } catch (Exception e) {
+            log.error("验证新邮箱验证码异常", e);
             map.put("code", ResponseCode.WRONG.getCode());
             map.put("msg", ResponseCode.WRONG.getDesc());
         }
