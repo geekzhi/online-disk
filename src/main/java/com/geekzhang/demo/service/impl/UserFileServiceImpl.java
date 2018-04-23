@@ -1,8 +1,10 @@
 package com.geekzhang.demo.service.impl;
 
 import com.geekzhang.demo.enums.ResponseCode;
+import com.geekzhang.demo.mapper.FollowerMapper;
 import com.geekzhang.demo.mapper.UserFileMapper;
 import com.geekzhang.demo.mapper.UserMapper;
+import com.geekzhang.demo.orm.StatisticsDTO;
 import com.geekzhang.demo.orm.User;
 import com.geekzhang.demo.orm.UserFile;
 import com.geekzhang.demo.redis.RedisClient;
@@ -40,6 +42,9 @@ public class UserFileServiceImpl implements UserFileService {
     private UserMapper userMapper;
 
     @Autowired
+    private FollowerMapper followerMapper;
+
+    @Autowired
     private RedisClient redisClient;
 
     @Value("${web.var.filePath}")
@@ -67,11 +72,6 @@ public class UserFileServiceImpl implements UserFileService {
         Map<String, String> map = new HashMap<>();
         for (MultipartFile file : files) {
             String fileType = file.getContentType().split("/")[0];
-//            if (!FileUtil.getAllowType(fileType)) {
-//                log.info("文件上传|不支持的文件类型");
-//                map.put("error", "不支持的文件类型");
-//                return map;
-//            }
             /**
              * 判断是否超过用户网盘容量
              */
@@ -90,8 +90,12 @@ public class UserFileServiceImpl implements UserFileService {
                 String filePath = (String) fileMap.get("path");
                 filePath = filePath.split(splitPath)[1];
                 newFile.setPath(filePath);
-                newFile.setType(fileType);
                 newFile.setSuffixName((String) fileMap.get("suffixName"));
+                if(FileUtil.docType(newFile.getSuffixName())) {
+                    log.info("文件上传|文件类型为文档");
+                    fileType = "doc";
+                }
+                newFile.setType(fileType);
                 newFile.setUserId(Integer.valueOf(userId));
                 newFile.setSize((String) fileMap.get("size"));
                 newFile.setParentPath(parentPath);
@@ -99,7 +103,7 @@ public class UserFileServiceImpl implements UserFileService {
                 usePlusMap.put("userId", userId);
                 usePlusMap.put("size", newFile.getSize());
                 int i = userMapper.usePlus(usePlusMap);
-                System.out.println(newFile.toString());
+                log.info("文件信息：【{}】",newFile.toString());
                 int j = userFileMapper.insert(newFile);
                 log.info("i:{},j{}", i, j);
                 log.info("文件上传|已存入userId：【{}】的文件：【{}】", userId, newFile.getName());
@@ -395,11 +399,92 @@ public class UserFileServiceImpl implements UserFileService {
                 dataMap.put("avatar", user.getPic());
                 dataMap.put("userName", user.getName());
                 dataMap.put("id", String.valueOf(user.getId()));
+                if(String.valueOf(user.getId()).equals(userId)){
+                    dataMap.put("self", "true");
+                } else {
+                    dataMap.put("self", "false");
+                    Map<String, String> paraMap = new HashMap<>();
+                    paraMap.put("userId", userId);
+                    paraMap.put("followId", String.valueOf(user.getId()));
+                    if(followerMapper.findRecorder(paraMap) == 1){
+                        dataMap.put("follow", "true");
+                    } else {
+                        dataMap.put("follow", "false");
+                    };
+                }
             }
         }
         map.put("code", ResponseCode.SUCCESS.getCode());
         map.put("msg", ResponseCode.SUCCESS.getDesc());
         map.put("data", dataMap);
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> getStatistics(String userId) {
+        Map<String, Object> map = new HashMap<>();
+        List<StatisticsDTO> numList = new ArrayList<>();
+        List<StatisticsDTO> sizeList = new ArrayList<>();
+        List dataList = new ArrayList<>();
+        Map<String, String> paraMap = new HashMap<>();
+        paraMap.put("userId", userId);
+        int total = userFileMapper.getTotalNoTrash(userId);
+        int use = Integer.valueOf(userMapper.findById(userId).getUse());
+        int size = Integer.valueOf(userMapper.findById(userId).getSize());
+        int totalSize = use;
+        int emptySize = size - use;
+        paraMap.put("type", "image");
+        int img = userFileMapper.getTotalNoTrashByType(paraMap);
+        int imgSize = userFileMapper.getSizeNoTrashByType(paraMap);
+        paraMap.put("type", "video");
+        int video = userFileMapper.getTotalNoTrashByType(paraMap);
+        int videoSize = userFileMapper.getSizeNoTrashByType(paraMap);
+        paraMap.put("type", "doc");
+        int doc = userFileMapper.getTotalNoTrashByType(paraMap);
+        int docSize = userFileMapper.getSizeNoTrashByType(paraMap);
+        numList.add(new StatisticsDTO("图片", img));
+        numList.add(new StatisticsDTO("视频", video));
+        numList.add(new StatisticsDTO("文档", doc));
+        numList.add(new StatisticsDTO("其他", total - img - video - doc));
+        sizeList.add(new StatisticsDTO("图片", imgSize));
+        sizeList.add(new StatisticsDTO("视频", videoSize));
+        sizeList.add(new StatisticsDTO("文档", docSize));
+        sizeList.add(new StatisticsDTO("其他", totalSize - imgSize - videoSize - docSize));
+        sizeList.add(new StatisticsDTO("剩余空间", emptySize));
+        dataList.add(numList);
+        dataList.add(sizeList);
+        log.info("文件统计|结果：【{},{}】", dataList.toString());
+        map.put("code", ResponseCode.SUCCESS.getCode());
+        map.put("msg", ResponseCode.SUCCESS.getDesc());
+        map.put("data", dataList);
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> recoverChoose(String userId, String id) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, String> paraMap = new HashMap<>();
+        String []fileId = id.split(",");
+        System.out.println(fileId.toString());
+        paraMap.put("deleteFlag", "0");
+        for(int i = 0; i < fileId.length; i++) {
+            paraMap.put("id", fileId[i]);
+            userFileMapper.updateFileDeleteById(paraMap);
+        }
+        map.put("code", ResponseCode.SUCCESS.getCode());
+        map.put("msg", ResponseCode.SUCCESS.getDesc());
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> recoverAll(String userId) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> paraMap = new HashMap<>();
+        paraMap.put("deleteFlag", "0");
+        paraMap.put("userId", userId);
+        userFileMapper.updateAllFileDelete(paraMap);
+        map.put("code", ResponseCode.SUCCESS.getCode());
+        map.put("msg", ResponseCode.SUCCESS.getDesc());
         return map;
     }
 }

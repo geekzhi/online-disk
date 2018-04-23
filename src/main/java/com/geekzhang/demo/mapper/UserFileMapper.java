@@ -16,7 +16,13 @@ public interface UserFileMapper {
 
     int getTotalByType(Map map);
 
+    int getTotalNoTrashByType(Map map);
+
+    int getSizeNoTrashByType(Map map);
+
     int getTotalTrash(String userId);
+
+    int getTotalNoTrash(String userId);
 
     int insert(UserFile userFile);
 
@@ -37,6 +43,8 @@ public interface UserFileMapper {
     UserFile getFileByShareCode(String shareCode);
 
     int updateFileDeleteById(Map map);
+
+    int updateAllFileDelete(Map map);
 
     int updateFolderDeleteById(Map map);
 
