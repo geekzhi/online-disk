@@ -44,7 +44,7 @@ public class TestController {
         alipayRequest.setReturnUrl("http://www.baidu.com");
         alipayRequest.setNotifyUrl("http://106.15.183.161:8080/server/ali/back");//在公共参数中设置回跳和通知地址
         alipayRequest.setBizContent("{" +
-                "    \"out_trade_no\":\"201503200101010ss3\"," +
+                "    \"out_trade_no\":\"20150320010101021s3\"," +
                 "    \"product_code\":\"FAST_INSTANT_TRADE_PAY\"," +
                 "    \"total_amount\":88.88," +
                 "    \"subject\":\"Iphone6 16G\"," +
