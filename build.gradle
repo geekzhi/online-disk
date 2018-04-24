@@ -65,5 +65,8 @@ dependencies {
 	// https://mvnrepository.com/artifact/com.alipay.sdk/alipay-sdk-java
 	compile group: 'com.alipay.sdk', name: 'alipay-sdk-java', version: '3.0.0'
 
+	// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+	compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.5'
+
 
 }

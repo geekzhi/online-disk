@@ -7,14 +7,20 @@ import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.geekzhang.demo.mapper.FriendsMapper;
 import com.geekzhang.demo.redis.RedisClient;
+import com.geekzhang.demo.util.HttpUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Description:
@@ -65,6 +71,21 @@ public class TestController {
         httpResponse.getWriter().flush();
         httpResponse.getWriter().close();
 
+    }
+
+    @RequestMapping("/tt/{tradeNo}")
+    public void sss(@PathVariable String tardeNo){
+        String host = "http://pan.geekzhang.com:8080/server/ali/success?tradeNo=" + tardeNo ;
+        String path = "";
+        String method = "GET";
+        Map<String, String> headMap = new HashMap<>();
+        Map<String, String> queryMap = new HashMap<>();
+        try {
+            HttpResponse response = HttpUtils.doGet(host, path, method, headMap, queryMap);
+            System.out.println(EntityUtils.toString(response.getEntity())); //输出json
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
