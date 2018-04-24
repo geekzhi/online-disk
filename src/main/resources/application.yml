@@ -9,7 +9,7 @@ mybatis:
 # 不走拦截器的url
 web:
   exclude:
-    path: /login/**,/test/**,/verifyCode,/register,/changePass,/forgot
+    path: /login/**,/test/**,/verifyCode,/register,/changePass,/forgot,/back
 
 ---
 #本地开发环境

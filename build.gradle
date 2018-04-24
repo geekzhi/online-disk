@@ -62,4 +62,8 @@ dependencies {
 
 	compile 'com.aliyun:aliyun-java-sdk-green:3.1.0'
 
+	// https://mvnrepository.com/artifact/com.alipay.sdk/alipay-sdk-java
+	compile group: 'com.alipay.sdk', name: 'alipay-sdk-java', version: '3.0.0'
+
+
 }
