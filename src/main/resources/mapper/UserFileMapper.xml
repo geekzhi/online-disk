@@ -90,24 +90,24 @@
     </sql>
 
     <select id="getTotalByType" parameterType="String" resultType="Integer">
-        select count(*) from user_file where userId = #{userId} and `type` = #{type}
+        select ifnull(count(*), 0) from user_file where userId = #{userId} and `type` = #{type}
     </select>
 
     <select id="getTotalNoTrashByType" parameterType="String" resultType="Integer">
-        select count(*) from user_file where userId = #{userId} and `delete` = 0 and `type` = #{type}
+        select ifnull(count(*), 0) from user_file where userId = #{userId} and `delete` = 0 and `type` = #{type}
     </select>
 
     <select id="getSizeNoTrashByType" parameterType="String" resultType="Integer">
-        select sum(size) from user_file where
+        select ifnull(sum(size), 0) from user_file where
            userId = #{userId} and `delete` = 0 and `type` = #{type}
     </select>
 
     <select id="getTotalTrash" parameterType="String" resultType="Integer">
-        select count(*) from user_file where userId = #{userId} and `delete` = 1
+        select ifnull(count(*), 0) from user_file where userId = #{userId} and `delete` = 1
     </select>
 
     <select id="getTotalNoTrash" parameterType="String" resultType="Integer">
-        select count(*) from user_file where userId = #{userId} and `delete` = 0
+        select ifnull(count(*), 0) from user_file where userId = #{userId} and `delete` = 0
     </select>
 
     <select id="getTrashFileList" parameterType="String" resultMap="userFile">
@@ -127,7 +127,7 @@
     </select>
 
     <select id="getFileNumByParentPath" parameterType="String" resultType="Integer">
-        select count(*) from user_file where `parentPath` = #{parentPath}
+        select ifnull(count(*), 0) from user_file where `parentPath` = #{parentPath}
     </select>
 
     <select id = "getFileListByPath" parameterType="String" resultMap="userFile">

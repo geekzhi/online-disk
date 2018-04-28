@@ -13,6 +13,7 @@
         <result property="size" column="size"/>
         <result property="use" column="use"/>
         <result property="pic" column="pic"/>
+        <result property="vipExpiration" column="vipExpiration"/>
     </resultMap>
 
     <sql id="columns">
@@ -51,6 +52,10 @@
 
             <if test="pic!=null">
                 `pic` = #{pic},
+            </if>
+
+            <if test="vipExpiration!=null">
+                `vipExpiration` = #{vipExpiration},
             </if>
         </trim>
     </sql>

@@ -36,6 +36,7 @@ public class AliPayController {
     @GetMapping("/success")
     public Boolean getStatus(String tradeNo){
         if(redisClient.exists(tradeNo)) {
+            redisClient.delCacheByKey(tradeNo);
             return true;
         } else {
             return false;
