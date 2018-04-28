@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geekzhang.demo.mapper.TradeMapper">
+
+    <resultMap id="trade" type="com.geekzhang.demo.orm.Trade">
+        <result property="id" column="id"/>
+        <result property="tradeNo" column="tradeNo"/>
+        <result property="userId" column="userId"/>
+        <result property="price" column="price"/>
+        <result property="info" column="info"/>
+        <result property="time" column="time"/>
+        <result property="success" column="success"/>
+    </resultMap>
+
+    <select id="selectByTradeNo" resultMap="trade">
+        select * from trade where `tradeNo` = #{tradeNo}
+    </select>
+
+    <insert id="insert">
+        insert into trade(`tradeNo`, `userId`, `price`, `info`, `time`, `success`)
+          values (#{tradeNo}, #{userId}, #{price}, #{info}, #{time}, #{success})
+    </insert>
+
+    <update id="updateSuccess">
+        update trade set `success` = #{success} where `userId` = #{userId} and `tradeNo` = #{tradeNo}
+    </update>
+</mapper>

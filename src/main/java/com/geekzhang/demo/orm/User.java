@@ -1,6 +1,9 @@
 package com.geekzhang.demo.orm;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 @Data
 public class User {
@@ -14,4 +17,6 @@ public class User {
     String size; //网盘大小 Kb
     String use; //已使用大小 Kb
     String pic; //头像地址
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh-mm-ss")
+    Date vipExpiration; //vip过期时间
 }

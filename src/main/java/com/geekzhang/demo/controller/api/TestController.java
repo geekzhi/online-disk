@@ -1,21 +1,21 @@
 package com.geekzhang.demo.controller.api;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.geekzhang.demo.mapper.FriendsMapper;
+import com.geekzhang.demo.mapper.UserMapper;
+import com.geekzhang.demo.orm.User;
 import com.geekzhang.demo.redis.RedisClient;
 import com.geekzhang.demo.util.HttpUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,12 +29,16 @@ import java.util.Map;
  * @version: V1.0
  */
 @RestController
+@RequestMapping(value = "/test")
 public class TestController {
 
     @Autowired
     RedisClient redisClient;
 
-    @RequestMapping(value = "/test")
+    @Autowired
+    private UserMapper userMapper;
+
+    @RequestMapping(value = "/t")
     public void get(HttpServletResponse httpResponse) throws Exception {
         String serverUrl = "https://openapi.alipaydev.com/gateway.do";
         String appId = "2016091500518177";
@@ -49,17 +53,13 @@ public class TestController {
         AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();//创建API对应的request
         alipayRequest.setReturnUrl("http://www.baidu.com");
         alipayRequest.setNotifyUrl("http://106.15.183.161:8080/server/ali/back");//在公共参数中设置回跳和通知地址
-        alipayRequest.setBizContent("{" +
-                "    \"out_trade_no\":\"20150320010101021s3\"," +
-                "    \"product_code\":\"FAST_INSTANT_TRADE_PAY\"," +
-                "    \"total_amount\":88.88," +
-                "    \"subject\":\"Iphone6 16G\"," +
-                "    \"body\":\"Iphone6 16G\"," +
-                "    \"passback_params\":\"merchantBizType%3d3C%26merchantBizNo%3d2016010101111\"," +
-                "    \"extend_params\":{" +
-                "    \"sys_service_provider_id\":\"2088511833207846\"" +
-                "    }"+
-                "  }");//填充业务参数
+        JSONObject paraMap = new JSONObject();
+        paraMap.put("out_trade_no","123");
+        paraMap.put("product_code","FAST_INSTANT_TRADE_PAY");
+        paraMap.put("total_amount","10");
+        paraMap.put("subject","网盘会员一个月");
+        paraMap.put("body","网盘会员一个月");
+        alipayRequest.setBizContent(paraMap.toString());
         String form="";
         try {
             form = alipayClient.pageExecute(alipayRequest).getBody(); //调用SDK生成表单
@@ -73,9 +73,9 @@ public class TestController {
 
     }
 
-    @RequestMapping("/tt/{tradeNo}")
-    public void sss(@PathVariable String tardeNo){
-        String host = "http://pan.geekzhang.com:8080/server/ali/success?tradeNo=" + tardeNo ;
+    @RequestMapping("/tt")
+    public void sss(@RequestParam String tradeNo){
+        String host = "http://pan.geekzhang.com:8080/server/ali/success?tradeNo=" + tradeNo ;
         String path = "";
         String method = "GET";
         Map<String, String> headMap = new HashMap<>();
@@ -86,6 +86,11 @@ public class TestController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @RequestMapping("/tu")
+    public User sdf(){
+        return userMapper.findById("1");
     }
 
 }
