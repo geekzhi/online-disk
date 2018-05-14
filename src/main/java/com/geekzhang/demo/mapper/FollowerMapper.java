@@ -1,5 +1,8 @@
 package com.geekzhang.demo.mapper;
 
+import com.geekzhang.demo.orm.FollowDto;
+
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -9,6 +12,8 @@ import java.util.Map;
  * @version: V1.0
  */
 public interface FollowerMapper {
+
+    List<FollowDto> select(String userId);
 
     int findRecorder(Map map);
 

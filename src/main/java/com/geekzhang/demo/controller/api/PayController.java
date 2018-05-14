@@ -180,7 +180,8 @@ public class PayController extends AbstractController{
                             calendar.setTime(new Date());
                             userDto.setVip("1");
                         }
-                        userDto.setSize(user.getSize() + 10*1024*1024);
+                        userDto.setSize(String.valueOf(Long.valueOf(user.getSize()) + Long.valueOf(10*1024*1024l)));
+                        System.out.println(userDto.getSize());
                         calendar.add(Calendar.MONTH, num);
                         userDto.setVipExpiration(calendar.getTime());
                         userMapper.update(userDto);

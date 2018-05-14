@@ -17,6 +17,14 @@ public interface UserFileService {
 
     Map<String, Object> getFileListByType(String userId, String fileType, String pageNum);
 
+    Map<String, Object> getShareFileList(String userId);
+
+    Map<String, Object> searchFile(String userId, String fileName);
+
+    Map<String, Object> cancelShare(String userId, String id);
+
+    Map<String, Object> cancelAllShare(String userId, String id);
+
     Map<String, Object> newFolder(String userId, String parentPath);
 
     Map<String, Object> getFileListByPath(String userId, String parentPath);
@@ -34,4 +42,9 @@ public interface UserFileService {
     Map<String, Object> recoverChoose(String userId, String id);
 
     Map<String, Object> recoverAll(String userId);
+
+    Map<String, Object> star(String userId, String id, String star);
+
+    Map<String, Object> getStarFile(String userId, String star);
+
 }

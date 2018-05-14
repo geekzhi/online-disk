@@ -56,4 +56,19 @@ public class NoticeController extends AbstractController{
         }
         return map;
     }
+
+    @GetMapping("/system")
+    public Map<String, Object> getSystemNotice(){
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String userId = getUserId();
+            log.info("获取系统通知，用户ID:[{}]", userId);
+            map = userService.getSystemNotice();
+        } catch (Exception e) {
+            log.error("获取系统通知", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
 }

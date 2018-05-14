@@ -10,6 +10,13 @@
         <result property="pic" column="pic"/>
     </resultMap>
 
+    <resultMap id="friendDto" type="com.geekzhang.demo.orm.FriendDto">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="pic" column="pic"/>
+        <result property="pass" column="pass"/>
+    </resultMap>
+
     <resultMap id="selectFriend" type="com.geekzhang.demo.orm.Friends">
         <result property="id" column="id"/>
         <result property="userId" column="userId"/>
@@ -37,10 +44,12 @@
         )
     </select>
 
-    <select id="selectUnPassFriends" resultMap="friend">
-        select `id`,`name`,`pic` from user where `id` in (
-        select `userId` from friends where <include refid="selectColumn"/>
-        )
+    <select id="selectSend" resultMap="friendDto">
+       select u.id,u.name,u.pic,f.pass from user u,friends f where u.id = f.friendId and f.userId = #{userId}
+    </select>
+
+    <select id="selectReceive" resultMap="friendDto">
+        select u.id,u.name,u.pic,f.pass from user u,friends f where u.id = f.userId and f.friendId = #{userId}
     </select>
 
     <select id="findFriend" parameterType="String" resultMap="selectFriend">

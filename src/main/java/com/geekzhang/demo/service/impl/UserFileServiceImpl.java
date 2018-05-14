@@ -27,7 +27,7 @@ import java.util.*;
 
 /**
  * @Description:
- * @author: zhangpengzhi<zhang_pz               @               suixingpay.com>
+ * @author: zhangpengzhi<geekzhang@163.com>
  * @date: 2018/2/6 下午2:10
  * @version: V1.0
  */
@@ -146,6 +146,61 @@ public class UserFileServiceImpl implements UserFileService {
         }
         map.put("data", fileList);
         map.put("page", (total / Integer.valueOf(pageSize)) + 1);
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> getShareFileList(String userId) {
+        Map<String, Object> map = new HashMap();
+        List<UserFile> fileList = userFileMapper.getShareFileList(userId);
+        map.put("code", ResponseCode.SUCCESS.getCode());
+        map.put("msg", ResponseCode.SUCCESS.getDesc());
+        map.put("data", fileList);
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> searchFile(String userId, String fileName) {
+        Map<String, Object> map = new HashMap<>();
+        if(!StringUtils.isEmpty(fileName)) {
+            Map<String, String> paraMap = new HashMap<>();
+            paraMap.put("userId", userId);
+            paraMap.put("name", fileName);
+            List<UserFile> fileList = userFileMapper.searchFile(paraMap);
+            map.put("code", ResponseCode.SUCCESS.getCode());
+            map.put("msg", ResponseCode.SUCCESS.getDesc());
+            map.put("data", fileList);
+        } else {
+            map.put("code", ResponseCode.SEARCH_PARAM_WRONG.getCode());
+            map.put("msg", ResponseCode.SEARCH_PARAM_WRONG.getDesc());
+        }
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> cancelShare(String userId, String id) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> paraMap = new HashMap<>();
+        paraMap.put("userId", userId);
+        paraMap.put("id", id);
+        userFileMapper.updateCnacelShare(paraMap);
+        map.put("code", ResponseCode.SUCCESS.getCode());
+        map.put("msg", ResponseCode.SUCCESS.getDesc());
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> cancelAllShare(String userId, String id) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, String> paraMap = new HashMap<>();
+        String []fileId = id.split(",");
+        paraMap.put("userId", userId);
+        for(int i = 0; i < fileId.length; i++) {
+            paraMap.put("id", fileId[i]);
+            userFileMapper.updateCnacelShare(paraMap);
+        }
+        map.put("code", ResponseCode.SUCCESS.getCode());
+        map.put("msg", ResponseCode.SUCCESS.getDesc());
         return map;
     }
 
@@ -352,12 +407,16 @@ public class UserFileServiceImpl implements UserFileService {
     public Map<String, Object> shareDownload(String code, String pass, String userId) {
         Map<String, Object> map = new HashMap<>();
         Map<String, String> dataMap = new HashMap<>();
+        Boolean self = false;
         UserFile userFile = userFileMapper.getFileByShareCode(code);
         //数据库中没有分享文件的记录
         if (null == userFile) {
             map.put("code", ResponseCode.WRONG.getCode());
             map.put("msg", ResponseCode.WRONG.getDesc());
             return map;
+        }
+        if(userId.equals(String.valueOf(userFile.getUserId()))) {
+            self = true;
         }
         //非永久分享并且redis中无分享码
         if (2 != userFile.getShareValid()
@@ -368,11 +427,11 @@ public class UserFileServiceImpl implements UserFileService {
             return map;
         }
         //文件分享存在
-        if (!StringUtils.isEmpty(userFile.getSharePass()) && StringUtils.isEmpty(pass)) {
+        if (!StringUtils.isEmpty(userFile.getSharePass()) && StringUtils.isEmpty(pass) && self == false) {
             log.info("文件分享|文件为加密分享");
             dataMap.put("encrypt", "yes");
         } else {
-            if (!StringUtils.isEmpty(pass) && !pass.equals(userFile.getSharePass())) {
+            if (!StringUtils.isEmpty(pass) && !pass.equals(userFile.getSharePass()) && self == false) {
                 map.put("code", ResponseCode.FILE_SHARE_PASS_WRONG.getCode());
                 map.put("msg", ResponseCode.FILE_SHARE_PASS_WRONG.getDesc());
                 map.put("data", dataMap);
@@ -430,9 +489,9 @@ public class UserFileServiceImpl implements UserFileService {
         paraMap.put("userId", userId);
         int total = userFileMapper.getTotalNoTrash(userId);
         int use = Integer.valueOf(userMapper.findById(userId).getUse());
-        int size = Integer.valueOf(userMapper.findById(userId).getSize());
+        long size = Long.valueOf(userMapper.findById(userId).getSize());
         int totalSize = use;
-        int emptySize = size - use;
+        long emptySize = size - use;
         paraMap.put("type", "image");
         int img = userFileMapper.getTotalNoTrashByType(paraMap);
         int imgSize = userFileMapper.getSizeNoTrashByType(paraMap);
@@ -465,7 +524,6 @@ public class UserFileServiceImpl implements UserFileService {
         Map<String, Object> map = new HashMap<>();
         Map<String, String> paraMap = new HashMap<>();
         String []fileId = id.split(",");
-        System.out.println(fileId.toString());
         paraMap.put("deleteFlag", "0");
         for(int i = 0; i < fileId.length; i++) {
             paraMap.put("id", fileId[i]);
@@ -485,6 +543,38 @@ public class UserFileServiceImpl implements UserFileService {
         userFileMapper.updateAllFileDelete(paraMap);
         map.put("code", ResponseCode.SUCCESS.getCode());
         map.put("msg", ResponseCode.SUCCESS.getDesc());
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> star(String userId, String id, String star) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, String> paraMap = new HashMap<>();
+        paraMap.put("userId", userId);
+        paraMap.put("id", id);
+        paraMap.put("star", star);
+        userFileMapper.updateStar(paraMap);
+        map.put("code", ResponseCode.SUCCESS.getCode());
+        map.put("msg", ResponseCode.SUCCESS.getDesc());
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> getStarFile(String userId, String star) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, String> paraMap = new HashMap<>();
+        String []s = star.split(",");
+        List<UserFile> dataList = new ArrayList<>();
+        paraMap.put("userId", userId);
+        for(int i = 0; i < s.length; i++){
+            paraMap.put("star", s[i]);
+            dataList.addAll(userFileMapper.getFileListByStar(paraMap));
+            System.out.println(dataList.toString());
+            System.out.println(s[i]);
+        }
+        map.put("code", ResponseCode.SUCCESS.getCode());
+        map.put("msg", ResponseCode.SUCCESS.getDesc());
+        map.put("data", dataList);
         return map;
     }
 }

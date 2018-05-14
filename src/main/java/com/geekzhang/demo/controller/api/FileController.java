@@ -41,10 +41,11 @@ public class FileController extends AbstractController {
      * @return
      */
     @RequestMapping(value = "/upload", method = {RequestMethod.POST})
-    public Map<String, String> uploadFile(MultipartHttpServletRequest request, String parentPath){
+    public Map<String, String> uploadFile(MultipartHttpServletRequest request, String parentPath, String md5){
         Map<String, String> map = new HashMap<>();
         try {
             String userId = TokenUtil.getUserId(request().getParameter("token"));
+            log.info("文件上传，用户ID:[{}],父路径：【{}】，MD5值：【{}】", userId, parentPath, md5);
             map = userFileService.uploadFile(userId, request.getFiles("files"), parentPath);
         } catch (Exception e) {
             log.info("文件上传|异常：【{}】", e);
@@ -67,6 +68,76 @@ public class FileController extends AbstractController {
             map = userFileService.getFileListByType(userId, fileType, pageNum);
         } catch (Exception e) {
             log.info("获取用户文件|异常：【{}】", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
+
+    /**
+     * 查找文件
+     * @param fileName
+     * @return
+     */
+    @GetMapping("/search/{fileName}")
+    public Map<String, Object> searchFile (@PathVariable String fileName){
+        Map<String, Object> map = new HashMap<>();
+        try {
+            map = userFileService.searchFile(getUserId(), fileName);
+        } catch (Exception e) {
+            log.info("查找文件|异常：【{}】", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
+    /**
+     * 获取用户分享文件信息
+     * @return
+     */
+    @GetMapping("shareFileList")
+    public Map<String, Object> shareFileList(){
+        Map<String, Object> map = new HashMap<>();
+        try {
+            map = userFileService.getShareFileList(getUserId());
+        } catch (Exception e) {
+            log.info("获取用户分享文件信息|异常：【{}】", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
+
+    /**
+     * 取消分享单个文件
+     * @param id
+     * @return
+     */
+    @PutMapping("cancelShare")
+    public Map<String, Object> cancelShare(String id){
+        Map<String, Object> map = new HashMap<>();
+        try {
+            map = userFileService.cancelShare(getUserId(), id);
+        } catch (Exception e) {
+            log.info("取消分享|异常：【{}】", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
+
+    /**
+     * 取消分享选中文件（多个）
+     * @param id
+     * @return
+     */
+    @PutMapping("cancelAllShare")
+    public Map<String, Object> cancelAllShare(String id){
+        Map<String, Object> map = new HashMap<>();
+        try {
+            map = userFileService.cancelAllShare(getUserId(), id);
+        } catch (Exception e) {
+            log.info("取消选中分享|异常：【{}】", e);
             map.put("code", ResponseCode.WRONG.getCode());
             map.put("msg", ResponseCode.WRONG.getDesc());
         }
@@ -240,5 +311,35 @@ public class FileController extends AbstractController {
         }
         return map;
 
+    }
+
+    @PutMapping("/star")
+    public Map<String, Object> starFile(String id, String star){
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String userId = getUserId();
+            log.info("文件评级|用户ID：【{}】，文件ID:[{}],评级：【{}】", userId, id, star);
+            map = userFileService.star(userId, id, star);
+        }catch (Exception e) {
+            log.info("文件评级|异常：【{}】", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
+
+    @PostMapping("/starFile")
+    public Map<String, Object> getStarFile(String star){
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String userId = getUserId();
+            log.info("获取星级文件|用户ID：【{}】，评级：【{}】", userId, star);
+            map = userFileService.getStarFile(userId, star);
+        }catch (Exception e) {
+            log.info("获取星级文件|异常：【{}】", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
     }
 }

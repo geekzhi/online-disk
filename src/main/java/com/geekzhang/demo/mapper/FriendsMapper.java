@@ -1,5 +1,6 @@
 package com.geekzhang.demo.mapper;
 
+import com.geekzhang.demo.orm.FriendDto;
 import com.geekzhang.demo.orm.Friends;
 import com.geekzhang.demo.orm.User;
 
@@ -15,7 +16,9 @@ import java.util.Map;
 public interface FriendsMapper {
     List<User> selectFriends(Map map);
 
-    List<User> selectUnPassFriends(Map map);
+    List<FriendDto> selectReceive(String userId);
+
+    List<FriendDto> selectSend(String userId);
 
     List<Friends> findFriend(Map map);
 

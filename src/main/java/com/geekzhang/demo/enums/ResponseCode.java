@@ -9,6 +9,8 @@ public enum ResponseCode {
     PASS_WRONG("U0002", "密码错误"),
     USERNAME_REPET("U003", "用户名重复"),
     REPEAT_PASS_WRONG("U0004", "旧密码错误"),
+    FACE_WRONG("U0005", "人脸不匹配"),
+    USER_DISABLE("U006", "该账号已被管理员停用"),
     EMAIL_WRONG("R001", "邮箱格式不正确"),
     EMAIL_REPET("R002", "邮箱已被使用"),
     VERIFYCODE_WRONG("R003", "验证码错误"),
@@ -24,7 +26,8 @@ public enum ResponseCode {
     FRIEND_REPET("F007", "已经在好友列表中"),
     FRIEND_SELF("F008", "请勿添加自己为好友"),
     FOLLOWER_CANCEL("N001", "取消关注"),
-    TEXT_SENSITIVE("T001", "文字内容违法"),;
+    TEXT_SENSITIVE("T001", "文字内容违法"),
+    SEARCH_PARAM_WRONG("S001", "参数错误"),;
 
     private final String code;
     private final String desc;

@@ -19,10 +19,13 @@
         <result property="shareValid" column="shareValid"/>
         <result property="sharePass" column="sharePass"/>
         <result property="shareTime" column="shareTime"/>
+        <result property="downloadTimes" column="downloadTimes"/>
+        <result property="star" column="star"/>
+        <result property="md5" column="md5"/>
     </resultMap>
 
     <sql id="selectColumns">
-        `id`, `name`, `suffixName`, `path`, `type`, `userId`, `size`, `parentPath`, `delete`, `deleteTime`, `shareCode`, `shareValid`, `sharePass`, `shareTime`
+        `id`, `name`, `suffixName`, `path`, `type`, `userId`, `size`, `parentPath`, `delete`, `deleteTime`, `shareCode`, `shareValid`, `sharePass`, `shareTime`, `downloadTimes`, `star`, `md5`
     </sql>
 
     <sql id="insertColumns">
@@ -53,6 +56,10 @@
 
             <if test="parentPath!=null">
                 parentPath,
+            </if>
+
+            <if test="md5!=null">
+                md5,
             </if>
         </trim>
     </sql>
@@ -86,6 +93,10 @@
             <if test="parentPath!=null">
                 #{parentPath},
             </if>
+
+            <if test="md5!=null">
+                #{md5},
+            </if>
         </trim>
     </sql>
 
@@ -114,6 +125,10 @@
         select <include refid="selectColumns"/> from user_file where userId = #{userId} and `delete` = 1
     </select>
 
+    <select id="getShareFileList" parameterType="String" resultMap="userFile">
+        select <include refid="selectColumns"/> from user_file where userId = #{userId} and `delete` = 0 and `shareValid` &lt;&gt; 0
+    </select>
+
     <select id="getFileById" parameterType="String" resultMap="userFile">
         select <include refid="selectColumns"/> from user_file where id = #{id}
     </select>
@@ -124,6 +139,10 @@
 
     <select id = "getFileList" parameterType="String" resultMap="userFile">
         select <include refid="selectColumns"/> from user_file where userId = #{userId}
+    </select>
+
+    <select id = "searchFile" parameterType="String" resultMap="userFile">
+        select <include refid="selectColumns"/> from user_file where userId = #{userId} and `delete` = "0" and `name` like "%"#{name}"%"
     </select>
 
     <select id="getFileNumByParentPath" parameterType="String" resultType="Integer">
@@ -139,6 +158,14 @@
 
     <select id = "getFileListByType" parameterType="String" resultMap="userFile">
         select <include refid="selectColumns"/> from user_file where userId = #{userId} and `type` = #{type}
+    </select>
+
+    <select id="getFileListByStar" parameterType="String" resultMap="userFile">
+        select <include refid="selectColumns"/> from user_file where userId = #{userId} and `star` = #{star}
+    </select>
+
+    <select id="getFileByMd5" resultMap="userFile">
+        select <include refid="selectColumns"/> from user_file where `md5` = #{md5}
     </select>
 
     <insert id="insert" parameterType="com.geekzhang.demo.orm.UserFile">
@@ -184,4 +211,21 @@
         where `id` = #{id} and `userId` = #{userId}
     </update>
 
+    <update id="updateDownloadTimes">
+        update user_file set `downloadTimes` = `downloadTimes` + 1 where `id` = #{ id }
+    </update>
+
+    <update id="updateCnacelShare">
+        update user_file set `shareValid` = 0 where `userId` = #{ userId } and `id` = #{ id }
+    </update>
+
+    <update id="updateStar">
+        update user_file set `star` = #{star} where `userId` = #{userId} and `id` = #{id}
+    </update>
+
+    <delete id="deleteScheduled">
+        delete from user_file where date_add(`deleteTime`, interval 30 day) &lt; CURRENT_DATE() and `userId` in (
+        select `id` from user where vip = 1
+        )
+    </delete>
 </mapper>

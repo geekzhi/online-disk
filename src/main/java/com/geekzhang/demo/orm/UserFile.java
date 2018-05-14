@@ -30,4 +30,7 @@ public class UserFile {
     String sharePass; //加密分享的密码
     @DateTimeFormat(pattern = "yyyy-MM-dd hh-mm-ss")
     Date shareTime; //分享时间
+    int downloadTimes; //下载次数
+    String star; //星级
+    String md5; //文件MD5值
 }

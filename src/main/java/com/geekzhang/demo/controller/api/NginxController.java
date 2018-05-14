@@ -1,7 +1,9 @@
 package com.geekzhang.demo.controller.api;
 
 import com.geekzhang.demo.controller.AbstractController;
+import com.geekzhang.demo.mapper.DownloadMapper;
 import com.geekzhang.demo.mapper.UserFileMapper;
+import com.geekzhang.demo.orm.Download;
 import com.geekzhang.demo.orm.UserFile;
 import com.geekzhang.demo.redis.RedisClient;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Date;
 
 /**
  * @Description:
@@ -31,6 +34,9 @@ public class NginxController extends AbstractController{
 
     @Autowired
     private UserFileMapper userFileMapper;
+
+    @Autowired
+    private DownloadMapper downloadMapper;
 
     @Autowired
     private RedisClient redisClient;
@@ -54,6 +60,12 @@ public class NginxController extends AbstractController{
                 String trueVerifyCode = redisClient.getCacheValue("shareFileVerifyCode" + getUserId());
                 log.info("获取文件非本人，识别码：【{}】,redis中存储的识别码：【{}】", verifyCode, trueVerifyCode);
                 if(!StringUtils.isEmpty(trueVerifyCode) && !StringUtils.isEmpty(verifyCode) && trueVerifyCode.equals(verifyCode)){
+                    userFileMapper.updateDownloadTimes(id);
+                    Download dto = new Download();
+                    dto.setFileId(Integer.valueOf(id));
+                    dto.setUserId(Integer.valueOf(getUserId()));
+                    dto.setTime(new Date());
+                    downloadMapper.insert(dto);
                     xAccelRedirectFile(file, response, path, name);
                 } else {
                     log.info("非法请求");
