@@ -30,6 +30,8 @@ public interface UserService {
 
     Map<String, Object> getFriendNotice(String userId);
 
+    Map<String, Object> getSystemNotice();
+
     Map<String, Object> dealFriend(String userId, String friendId, Boolean agree);
 
     Map<String, Object> changeName(String userId, String newName);
@@ -37,4 +39,7 @@ public interface UserService {
     Map<String, Object> changeOldPass(String userId, String oldPass, String newPass);
 
     Map<String, Object> confirgEmailVerify(String userId, String email, String code);
+
+    Map<String, Object> changeFace(String userId, String faceImg);
+
 }

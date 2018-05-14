@@ -14,6 +14,9 @@
         <result property="use" column="use"/>
         <result property="pic" column="pic"/>
         <result property="vipExpiration" column="vipExpiration"/>
+        <result property="face" column="face"/>
+        <result property="notice" column="notice"/>
+        <result property="staus" column="staus"/>
     </resultMap>
 
     <sql id="columns">
@@ -57,6 +60,14 @@
             <if test="vipExpiration!=null">
                 `vipExpiration` = #{vipExpiration},
             </if>
+
+            <if test="face!=null">
+                `face` = #{face},
+            </if>
+
+            <if test="notice!=null">
+                `notice` = #{notice}
+            </if>
         </trim>
     </sql>
 
@@ -73,7 +84,7 @@
     </select>
 
     <select id = "findByEmail" resultMap="user" parameterType="java.lang.String">
-        select <include refid="columns"/> from user
+        select * from user
           where `email` = #{email}
     </select>
 
@@ -95,5 +106,13 @@
 
     <update id="update" parameterType="com.geekzhang.demo.orm.User">
         update user <include refid="updateColumns"/> where id = #{id}
+    </update>
+    
+    <update id="updateVip">
+        update user set vip = 0 where `id` in (
+         select `id` from (
+             select b.`id` from user b where b.vipExpiration &lt; current_date()
+         ) as c
+        )
     </update>
 </mapper>

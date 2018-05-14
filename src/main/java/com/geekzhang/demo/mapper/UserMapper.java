@@ -23,4 +23,6 @@ public interface UserMapper
     int usePlus(Map map);
 
     int update(User user);
+
+    int updateVip();
 }

@@ -75,3 +75,30 @@ web:
 #生产环境日志路径
 logging:
   file: /online-disk/out.log
+
+---
+  #本地无线环境
+  # 数据库相关配置
+spring:
+    profiles: dev-wifi
+    datasource:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://local.vm:3306/test?useUnicode=true&characterEncoding=utf-8
+      password: root
+      username: root
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      timeout: 3000
+    http:
+      multipart:
+        max-file-size: 5000Mb
+        max-request-size: 5000Mb
+
+web:
+    var:
+      forgot: http://localhost:8081/change.html?id=
+      share: http://localhost:8081/share.html?code=
+      filePath: /Users/zhangpengzhi/WebstormProjects/static/
+      splitPath: static/
+      pageSize: 10

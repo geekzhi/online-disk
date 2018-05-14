@@ -19,4 +19,7 @@ public class User {
     String pic; //头像地址
     @DateTimeFormat(pattern = "yyyy-MM-dd hh-mm-ss")
     Date vipExpiration; //vip过期时间
+    String face; //人脸识别图像
+    int notice; //是否有通知消息 1：有 0：无
+    int staus; //是否停用 1：停用 0：正常
 }

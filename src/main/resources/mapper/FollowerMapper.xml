@@ -14,6 +14,16 @@
         select count(*) from follower where `userId` = #{userId} and `followId` = #{followId}
     </select>
 
+    <select id="select" parameterType="String" resultType="com.geekzhang.demo.orm.FollowDto">
+        select u.name as `name`, u.pic as `pic`, f.name as `fname`, f.shareCode as `shareCode`, f.shareTime as `shareTime`, ifnull(f.sharePass, 0)
+	        from user u, user_file f, follower o
+	        	where u.id = f.userId and u.id = o.followId
+			        and f.shareValid != 0 and f.sharePass = 0
+				      and o.followId in(
+	                      select `followId` from follower where `userId` = #{userId}
+                      ) order by f.shareTime desc
+    </select>
+
     <insert id="insert">
         insert into follower(`userId`, `followId`) values( #{userId}, #{followId})
     </insert>

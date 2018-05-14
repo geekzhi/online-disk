@@ -88,9 +88,16 @@ public class TestController {
         }
     }
 
-    @RequestMapping("/tu")
-    public User sdf(){
-        return userMapper.findById("1");
+    @RequestMapping(value = "/tu", method = {RequestMethod.GET})
+    public void sdf() {
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println("234hf2h389fh923hf9h23udsahf983h");
+
     }
 
 }

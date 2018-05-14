@@ -30,6 +30,10 @@ public interface UserFileMapper {
 
     List<UserFile> getFileList(String userId);
 
+    List<UserFile> searchFile(Map map);
+
+    List<UserFile> getShareFileList(String userId);
+
     List<UserFile> getFileListByType(Map map);
 
     List<UserFile> getTrashFileList(String userId);
@@ -38,9 +42,13 @@ public interface UserFileMapper {
 
     List<UserFile> getFileListByPath(Map map);
 
+    List<UserFile> getFileListByStar(Map map);
+
     UserFile getFileById(String id);
 
     UserFile getFileByShareCode(String shareCode);
+
+    UserFile getFileByMd5(String md5);
 
     int updateFileDeleteById(Map map);
 
@@ -53,5 +61,15 @@ public interface UserFileMapper {
     int modifyFolderName(Map map);
 
     int updateShareFile(Map map);
+
+    int updateDownloadTimes(String id);
+
+    int updateCnacelShare(Map map);
+
+    int updateStar(Map map);
+
+    int deleteScheduled();
+
+
 
 }

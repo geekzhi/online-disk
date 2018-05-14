@@ -2,6 +2,9 @@ package com.geekzhang.demo.controller.api;
 
 import com.geekzhang.demo.controller.AbstractController;
 import com.geekzhang.demo.enums.ResponseCode;
+import com.geekzhang.demo.mapper.FollowerMapper;
+import com.geekzhang.demo.mapper.UserMapper;
+import com.geekzhang.demo.orm.FollowDto;
 import com.geekzhang.demo.orm.User;
 import com.geekzhang.demo.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +15,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,6 +34,13 @@ public class UserController extends AbstractController{
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private FollowerMapper followerMapper;
+
     /**
      * 自动登录校验
      * @return
@@ -87,6 +99,23 @@ public class UserController extends AbstractController{
             map = userService.follow(id, userId);
         } catch (Exception e) {
             log.error("添加关注异常", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
+
+    @GetMapping("/follow")
+    public Map<String, Object> getFollow(){
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String userId = getUserId();
+            List<FollowDto> list = followerMapper.select(userId);
+            map.put("code", ResponseCode.SUCCESS.getCode());
+            map.put("msg", ResponseCode.SUCCESS.getDesc());
+            map.put("data", list);
+        } catch (Exception e) {
+            log.error("获取关注者分享文件异常", e);
             map.put("code", ResponseCode.WRONG.getCode());
             map.put("msg", ResponseCode.WRONG.getDesc());
         }
@@ -191,5 +220,28 @@ public class UserController extends AbstractController{
             map.put("msg", ResponseCode.WRONG.getDesc());
         }
         return map;
+    }
+
+    @PostMapping("/newFace")
+    public Map<String, Object> changeFace (String faceImg) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String userId = getUserId();
+            log.info("更换人脸，用户ID:[{}]", userId, faceImg);
+            map = userService.changeFace(userId, faceImg);
+        } catch (Exception e) {
+            log.error("更换人脸", e);
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
+
+    @PutMapping("/readNotice")
+    public void readNotice(){
+        User uDto = new User();
+        uDto.setId(Integer.valueOf(getUserId()));
+        uDto.setNotice(0);
+        userMapper.update(uDto);
     }
 }

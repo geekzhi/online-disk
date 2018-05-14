@@ -1,18 +1,23 @@
 package com.geekzhang.demo.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.geekzhang.demo.enums.ResponseCode;
 import com.geekzhang.demo.mapper.FollowerMapper;
 import com.geekzhang.demo.mapper.FriendsMapper;
+import com.geekzhang.demo.mapper.ServerMsgMapper;
 import com.geekzhang.demo.mapper.UserMapper;
+import com.geekzhang.demo.orm.FriendDto;
 import com.geekzhang.demo.orm.Friends;
+import com.geekzhang.demo.orm.ServerMsg;
 import com.geekzhang.demo.orm.User;
 import com.geekzhang.demo.redis.RedisClient;
 import com.geekzhang.demo.service.UserService;
-import com.geekzhang.demo.util.DataUtil;
-import com.geekzhang.demo.util.EmailUtil;
-import com.geekzhang.demo.util.TokenUtil;
-import com.geekzhang.demo.util.UuidUtil;
+import com.geekzhang.demo.util.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.Server;
+import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,6 +27,7 @@ import sun.misc.BASE64Decoder;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +46,9 @@ public class UserServiceImpl implements UserService {
     FriendsMapper friendsMapper;
 
     @Autowired
+    ServerMsgMapper serverMsgMapper;
+
+    @Autowired
     RedisClient redisClient;
 
     @Value("${web.var.forgot}")
@@ -56,6 +65,8 @@ public class UserServiceImpl implements UserService {
         userDto.setSize(user.getSize());
         userDto.setUse(user.getUse());
         userDto.setPic(user.getPic());
+        userDto.setNotice(user.getNotice());
+        userDto.setVipExpiration(user.getVipExpiration());
         String[] s = user.getEmail().split("@");
         char[] ch = s[0].toCharArray();
         if (ch.length < 5) {
@@ -86,35 +97,95 @@ public class UserServiceImpl implements UserService {
         String name = user.getName();
         String pass = user.getPass();
         String remember = user.getRemember();
+        String face = user.getFace();
         User resultUser = userMapper.findByName(name);
         if (resultUser == null) {
             log.info("用户登录|用户名[{}]不存在", name);
             map.put("code", ResponseCode.NO_USER.getCode());
             map.put("msg", ResponseCode.NO_USER.getDesc());
         } else {
-            if (pass.equals(resultUser.getPass())) {
-                //生成token
-                Map<String, Object> claim = new HashMap<>();
-                String usrId = String.valueOf(resultUser.getId());
-                claim.put("usrName", resultUser.getName());
-                claim.put("usrId", resultUser.getId());
-                claim.put("usrVip", resultUser.getVip());
-                claim.put("usrSize", resultUser.getSize());
-                claim.put("usrUse", resultUser.getUse());
-                String token = TokenUtil.getJWTString(usrId, claim);
-                log.info("用户登录|用户名密码正确，生成token:[{}]", token);
-                if ("on".equals(remember)) {
-                    redisClient.setCacheValueForTime(usrId, token, 7 * 24 * 60 * 60);
+            if(resultUser.getStaus() == 1) {
+                log.info("用户登录|用户名[{}]已停用", name);
+                map.put("code", ResponseCode.USER_DISABLE.getCode());
+                map.put("msg", ResponseCode.USER_DISABLE.getDesc());
+                return map;
+            }
+            if(StringUtils.isEmpty(face)) {
+                if (pass.equals(resultUser.getPass())) {
+                    //生成token
+                    Map<String, Object> claim = new HashMap<>();
+                    String usrId = String.valueOf(resultUser.getId());
+                    claim.put("usrName", resultUser.getName());
+                    claim.put("usrId", resultUser.getId());
+                    claim.put("usrVip", resultUser.getVip());
+                    claim.put("usrSize", resultUser.getSize());
+                    claim.put("usrUse", resultUser.getUse());
+                    String token = TokenUtil.getJWTString(usrId, claim);
+                    log.info("用户登录|用户名密码正确，生成token:[{}]", token);
+                    if ("on".equals(remember)) {
+                        redisClient.setCacheValueForTime(usrId, token, 7 * 24 * 60 * 60);
+                    } else {
+                        redisClient.setCacheValueForTime(usrId, token, 24 * 60 * 60);
+                    }
+                    log.info("用户登录|已向redis存入用户token");
+                    map.put("code", ResponseCode.SUCCESS.getCode());
+                    map.put("msg", ResponseCode.SUCCESS.getDesc());
+                    map.put("data", token);
+                    return  map;
                 } else {
-                    redisClient.setCacheValueForTime(usrId, token, 24 * 60 * 60);
+                    map.put("code", ResponseCode.PASS_WRONG.getCode());
+                    map.put("msg", ResponseCode.PASS_WRONG.getDesc());
+                    return  map;
                 }
-                log.info("用户登录|已向redis存入用户token");
-                map.put("code", ResponseCode.SUCCESS.getCode());
-                map.put("msg", ResponseCode.SUCCESS.getDesc());
-                map.put("data", token);
             } else {
-                map.put("code", ResponseCode.PASS_WRONG.getCode());
-                map.put("msg", ResponseCode.PASS_WRONG.getDesc());
+                String host = "http://rlsbbd.market.alicloudapi.com";
+                String path = "/face/verify";
+                String method = "POST";
+                String appcode = "fd047937ee894eb1be93586d653ecdb9";
+                Map<String, String> headers = new HashMap<String, String>();
+                //最后在header中的格式(中间是英文空格)为Authorization:APPCODE 83359fd73fe94948385f570e3c139105
+                headers.put("Authorization", "APPCODE " + appcode);
+                //根据API的要求，定义相对应的Content-Type
+                headers.put("Content-Type", "application/json; charset=UTF-8");
+                Map<String, String> querys = new HashMap<String, String>();
+                JSONObject json = new JSONObject();
+                json.put("type", "1");
+                json.put("content_1", resultUser.getFace());
+                json.put("content_2", face.split(",")[1]);
+                try {
+                    HttpResponse response = HttpUtils.doPost(host, path, method, headers, querys, json.toJSONString());
+                    JSONObject jsonOb = JSON.parseObject(EntityUtils.toString(response.getEntity()));
+                    BigDecimal sim = (BigDecimal)jsonOb.get("confidence");
+                    log.info("用户登录|用户ID:【{}】,人脸识别相似度：【{}】", resultUser.getId(), sim);
+                    if(sim.intValue() > 80) {
+                        //生成token
+                        Map<String, Object> claim = new HashMap<>();
+                        String usrId = String.valueOf(resultUser.getId());
+                        claim.put("usrName", resultUser.getName());
+                        claim.put("usrId", resultUser.getId());
+                        claim.put("usrVip", resultUser.getVip());
+                        claim.put("usrSize", resultUser.getSize());
+                        claim.put("usrUse", resultUser.getUse());
+                        String token = TokenUtil.getJWTString(usrId, claim);
+                        log.info("用户登录|人脸识别成功，生成token:[{}]", token);
+                        if ("on".equals(remember)) {
+                            redisClient.setCacheValueForTime(usrId, token, 7 * 24 * 60 * 60);
+                        } else {
+                            redisClient.setCacheValueForTime(usrId, token, 24 * 60 * 60);
+                        }
+                        log.info("用户登录|已向redis存入用户token");
+                        map.put("code", ResponseCode.SUCCESS.getCode());
+                        map.put("msg", ResponseCode.SUCCESS.getDesc());
+                        map.put("data", token);
+                        return map;
+                    } else {
+                        map.put("code", ResponseCode.FACE_WRONG.getCode());
+                        map.put("msg", ResponseCode.FACE_WRONG.getDesc());
+                        return map;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
         return map;
@@ -153,7 +224,8 @@ public class UserServiceImpl implements UserService {
                 log.info("注册|注册成功：[{}]", user.toString());
                 userMapper.insert(user);
                 map.put("code", ResponseCode.SUCCESS.getCode());
-                map.put("code", ResponseCode.SUCCESS.getDesc());
+                map.put("msg", ResponseCode.SUCCESS.getDesc());
+                return map;
             } else {
                 log.info("注册|验证码错误");
                 map.put("code", ResponseCode.VERIFYCODE_WRONG.getCode());
@@ -166,7 +238,6 @@ public class UserServiceImpl implements UserService {
             map.put("msg", ResponseCode.INFO_WRONG.getDesc());
             return map;
         }
-        return map;
     }
 
     /**
@@ -384,6 +455,10 @@ public class UserServiceImpl implements UserService {
         }
 
         if (u != null) {
+            User ud = new User();
+            ud.setId(u.getId());
+            ud.setNotice(1);
+            userMapper.update(ud);
             if(u.getId() == Integer.valueOf(userId)) {
                 map.put("code", ResponseCode.FRIEND_SELF.getCode());
                 map.put("msg", ResponseCode.FRIEND_SELF.getDesc());
@@ -426,15 +501,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public Map<String, Object> getFriendNotice(String userId) {
         Map<String, Object> map = new HashMap<>();
-        Map<String, Object> paraMap = new HashMap<>();
-        paraMap.put("friendId", userId);
-        paraMap.put("pass", "0");
-        List<User> unfriendList = friendsMapper.selectUnPassFriends(paraMap);
-        if(unfriendList.size() > 0) {
-            map.put("data", unfriendList);
-        }
+        List<FriendDto> receiveList = friendsMapper.selectReceive(userId);
+        List<FriendDto> sendList = friendsMapper.selectSend(userId);
         map.put("code", ResponseCode.SUCCESS.getCode());
         map.put("msg", ResponseCode.SUCCESS.getDesc());
+        map.put("receive", receiveList);
+        map.put("send", sendList);
+        System.out.println(sendList.toString());
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> getSystemNotice() {
+        Map<String, Object> map = new HashMap<>();
+        List<ServerMsg> msgList = serverMsgMapper.select();
+        map.put("code", ResponseCode.SUCCESS.getCode());
+        map.put("msg", ResponseCode.SUCCESS.getDesc());
+        map.put("data", msgList);
         return map;
     }
 
@@ -538,4 +621,22 @@ public class UserServiceImpl implements UserService {
         }
         return map;
     }
+
+    @Override
+    public Map<String, Object> changeFace(String userId, String faceImg) {
+        Map<String, Object> map = new HashMap<>();
+        if(!StringUtils.isEmpty(faceImg)) {
+            User userDto = new User();
+            userDto.setId(Integer.valueOf(userId));
+            userDto.setFace(faceImg.split(",")[1]);
+            userMapper.update(userDto);
+            map.put("code", ResponseCode.SUCCESS.getCode());
+            map.put("msg", ResponseCode.SUCCESS.getDesc());
+        } else {
+            map.put("code", ResponseCode.WRONG.getCode());
+            map.put("msg", ResponseCode.WRONG.getDesc());
+        }
+        return map;
+    }
+
 }
